@@ -223,11 +223,32 @@
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
         }
 
         .bookmark-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .bookmark-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .bookmark-card:hover::after {
+            opacity: 1;
         }
 
         .thumbnail-container {
@@ -309,18 +330,22 @@
             border-radius: 12px;
         }
 
-        .bookmark-link {
-            display: inline-flex;
-            align-items: center;
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            gap: 5px;
+        .external-link-icon {
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
         }
 
-        .bookmark-link:hover {
-            text-decoration: underline;
+        .bookmark-card:hover .external-link-icon {
+            opacity: 1;
+        }
+
+        .loading-thumbnail {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            font-size: 14px;
         }
 
         .filter-indicator {
@@ -348,15 +373,6 @@
 
         .clear-filter:hover {
             background: rgba(0, 122, 255, 0.1);
-        }
-
-        .loading-thumbnail {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: var(--text-secondary);
-            font-size: 14px;
         }
 
         /* Footer */
@@ -503,6 +519,23 @@
             }
         ];
 
+        // Función para obtener miniatura de una URL
+        function getThumbnailUrl(url) {
+            // Alternar entre servicios para mejor disponibilidad
+            const services = [
+                `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=400&h=300`,
+                `https://image.thum.io/get/width/400/crop/300/${url}`
+            ];
+            
+            // Usar servicio basado en el hash de la URL para distribución consistente
+            const hash = url.split('').reduce((a, b) => {
+                a = ((a << 5) - a) + b.charCodeAt(0);
+                return a & a;
+            }, 0);
+            
+            return services[Math.abs(hash) % services.length];
+        }
+
         // Datos de marcadores destacados con miniaturas
         const featuredBookmarks = [
             {
@@ -510,126 +543,117 @@
                 description: "Portal de empleo líder en España con miles de ofertas",
                 category: "Empleo y prestaciones",
                 url: "https://www.infojobs.net",
-                icon: "💼",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.infojobs.net&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "💼"
             },
             {
                 title: "LinkedIn Jobs",
                 description: "Plataforma profesional con ofertas de empleo internacionales",
                 category: "Empleo y prestaciones",
                 url: "https://www.linkedin.com/jobs",
-                icon: "💼",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.linkedin.com/jobs&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "💼"
             },
             {
                 title: "Milanuncios",
                 description: "Portal de anuncios clasificados para compra-venta de segunda mano",
                 category: "Segunda mano",
                 url: "https://www.milanuncios.com",
-                icon: "🔄",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.milanuncios.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "🔄"
             },
             {
                 title: "Wallapop",
                 description: "App para comprar y vender productos de segunda mano localmente",
                 category: "Segunda mano",
                 url: "https://www.wallapop.com",
-                icon: "🔄",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.wallapop.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "🔄"
             },
             {
                 title: "Coursera",
                 description: "Plataforma de cursos online de universidades de prestigio",
                 category: "Aprendizaje y proyectos",
                 url: "https://www.coursera.org",
-                icon: "📚",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.coursera.org&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "📚"
             },
             {
                 title: "Udemy",
                 description: "Miles de cursos online sobre diferentes temas y habilidades",
                 category: "Aprendizaje y proyectos",
                 url: "https://www.udemy.com",
-                icon: "📚",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.udemy.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "📚"
             },
             {
                 title: "Netflix",
                 description: "Plataforma de streaming con series, películas y documentales",
                 category: "Ocio y entretenimiento",
                 url: "https://www.netflix.com",
-                icon: "🎬",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.netflix.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "🎬"
             },
             {
                 title: "Spotify",
                 description: "Servicio de streaming de música, podcasts y audiolibros",
                 category: "Ocio y entretenimiento",
                 url: "https://www.spotify.com",
-                icon: "🎵",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.spotify.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "🎵"
             },
             {
                 title: "ForoCoches",
                 description: "Foro de discusión general y temático muy popular en España",
                 category: "Desahogo o foros anónimos",
                 url: "https://www.forocoches.com",
-                icon: "🗣️",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.forocoches.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "🗣️"
             },
             {
                 title: "Reddit",
                 description: "Plataforma de comunidades sobre prácticamente cualquier tema",
                 category: "Desahogo o foros anónimos",
                 url: "https://www.reddit.com",
-                icon: "🗣️",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.reddit.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "🗣️"
             },
             {
                 title: "Tinder",
                 description: "Aplicación líder para encuentros y citas",
                 category: "Encuentros y citas",
                 url: "https://tinder.com",
-                icon: "💑",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://tinder.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "💑"
             },
             {
                 title: "Badoo",
                 description: "Red social para conocer personas y establecer relaciones",
                 category: "Encuentros y citas",
                 url: "https://badoo.com",
-                icon: "💑",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://badoo.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "💑"
             },
             {
                 title: "Meetup",
                 description: "Plataforma para encontrar y crear grupos locales con intereses comunes",
                 category: "Amistad y comunidad",
                 url: "https://www.meetup.com",
-                icon: "👥",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.meetup.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "👥"
             },
             {
                 title: "Xataka",
                 description: "Medio de referencia en tecnología, gadgets y novedades digitales",
                 category: "Tecnología y novedades",
                 url: "https://www.xataka.com",
-                icon: "📱",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.xataka.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "📱"
             },
             {
                 title: "Genbeta",
                 description: "Noticias y análisis sobre aplicaciones y servicios web",
                 category: "Tecnología y novedades",
                 url: "https://www.genbeta.com",
-                icon: "📱",
-                thumbnail: "https://api.screenshotone.com/take?access_key=DEMO&url=https://www.genbeta.com&full_page=false&viewport_width=1200&viewport_height=800"
+                icon: "📱"
             }
         ];
 
+        // Añadir miniaturas a los marcadores
+        const featuredBookmarksWithThumbnails = featuredBookmarks.map(bookmark => ({
+            ...bookmark,
+            thumbnail: getThumbnailUrl(bookmark.url)
+        }));
+
         // Estado de la aplicación
         let currentFilter = null;
-        let allBookmarks = [...featuredBookmarks];
+        let allBookmarks = [...featuredBookmarksWithThumbnails];
 
         // Función para renderizar categorías
         function renderCategories() {
@@ -672,14 +696,20 @@
             }
             
             bookmarksToRender.forEach(bookmark => {
-                const bookmarkCard = document.createElement('div');
-                bookmarkCard.className = 'bookmark-card';
+                // Crear enlace que envuelve toda la tarjeta
+                const bookmarkLink = document.createElement('a');
+                bookmarkLink.className = 'bookmark-card';
+                bookmarkLink.href = bookmark.url;
+                bookmarkLink.target = '_blank';
+                bookmarkLink.rel = 'noopener noreferrer';
                 
                 // Crear estructura con miniatura
-                bookmarkCard.innerHTML = `
+                bookmarkLink.innerHTML = `
                     <div class="thumbnail-container">
                         <div class="loading-thumbnail">Cargando miniatura...</div>
-                        <img class="thumbnail" src="${bookmark.thumbnail}" alt="${bookmark.title}" style="display: none;" onload="this.style.display='block'; this.previousElementSibling.style.display='none';" onerror="this.previousElementSibling.innerHTML='❌ Error al cargar'; this.previousElementSibling.style.background='#ffebee';">
+                        <img class="thumbnail" src="${bookmark.thumbnail}" alt="${bookmark.title}" style="display: none;" 
+                             onload="this.style.display='block'; this.previousElementSibling.style.display='none';" 
+                             onerror="this.previousElementSibling.innerHTML='🌐 Vista previa no disponible'; this.previousElementSibling.style.background='#f5f5f7';">
                     </div>
                     <div class="bookmark-content">
                         <div class="bookmark-header">
@@ -689,19 +719,18 @@
                         <p class="bookmark-description">${bookmark.description}</p>
                         <div class="bookmark-footer">
                             <span class="bookmark-category">${bookmark.category}</span>
-                            <a href="${bookmark.url}" target="_blank" class="bookmark-link">
-                                Visitar 
+                            <div class="external-link-icon">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                     <path d="M10 2H14V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                                     <path d="M14 2L6 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                                     <path d="M14 8V14H2V2H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                                 </svg>
-                            </a>
+                            </div>
                         </div>
                     </div>
                 `;
                 
-                bookmarksGrid.appendChild(bookmarkCard);
+                bookmarksGrid.appendChild(bookmarkLink);
             });
         }
 
