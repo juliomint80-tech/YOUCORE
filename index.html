@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOUCORE - Portal de Marcadores Útiles</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            color: #333;
+            overflow-x: hidden;
+        }
+        header {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #007bff;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 600;
+        }
+        header p {
+            margin: 10px 0 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+        #search-container {
+            margin: 20px 0;
+            position: relative;
+        }
+        #search-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            outline: none;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        #search-input:focus {
+            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.2);
+            border-color: #007bff;
+        }
+        main {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .category {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            will-change: opacity, transform;
+        }
+        .category.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        .category h2 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.5em;
+            font-weight: 500;
+        }
+        .category ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .category ul li {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            transition: transform 0.2s ease;
+        }
+        .category ul li:hover {
+            transform: translateX(5px);
+        }
+        .category ul li a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .category ul li a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #555;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>YOUCORE</h1>
+        <p>Tu portal centralizado de marcadores útiles y temáticos. Descubre recursos sin registro.</p>
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Busca categorías o enlaces...">
+        </div>
+    </header>
+    <main>
+        <section class="category-grid">
+            <div class="category">
+                <h2>Empleo y Prestaciones</h2>
+                <ul>
+                    <li><a href="https://www.infojobs.net/" target="_blank" rel="noopener noreferrer">InfoJobs - Ofertas de empleo</a></li>
+                    <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn - Red profesional</a></li>
+                    <li><a href="https://www.sepe.es/" target="_blank" rel="noopener noreferrer">SEPE - Prestaciones y subsidios</a></li>
+                </ul>
+            </div>
+            <div class="category">
+                <h2>Servicios (Hogar, Salud, Reparaciones)</h2>
+                <ul>
+                    <li><a href="https://www.doctoralia.es/" target="_blank" rel="noopener noreferrer">Doctoralia - Citas médicas</a></li>
+                    <li><a href="https://www.habitissimo.es/" target="_blank" rel="noopener noreferrer">Habitissimo - Reparaciones del hogar</a></li>
+                    <li><a href="https://www.seg-social.es/" target="_blank" rel="noopener noreferrer">Seguridad Social - Servicios de salud</a></li>
+                </ul>
+            </div>
+            <div class="category">
+                <h2>Segunda Mano</h2>
+                <ul>
+                    <li><a href="https://www.wallapop.com/" target="_blank" rel="noopener noreferrer">Wallapop - Compra y venta local</a></li>
+                    <li><a href="https://www.vibbo.com/" target="_blank" rel="noopener noreferrer">Vibbo - Artículos de segunda mano</a></li>
+                    <li><a href="https://www.ebay.es/" target="_blank" rel="noopener noreferrer">eBay - Subastas y compras</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 YOUCORE. Todos los derechos reservados.</p>
+    </footer>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const categories = document.querySelectorAll('.category');
+            categories.forEach((cat, index) => {
+                setTimeout(() => {
+                    cat.classList.add('visible');
+                }, index * 100);
+            });
+        });
+
+        const searchInput = document.getElementById('search-input');
+        const categories = document.querySelectorAll('.category');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            categories.forEach(cat => {
+                const title = cat.querySelector('h2').textContent.toLowerCase();
+                const links = Array.from(cat.querySelectorAll('li a')).map(a => a.textContent.toLowerCase());
+                const matches = title.includes(searchTerm) || links.some(link => link.includes(searchTerm));
+                if (matches || searchTerm === '') {
+                    cat.classList.remove('hidden');
+                    cat.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    cat.style.opacity = 1;
+                    cat.style.transform = 'translateY(0)';
+                } else {
+                    cat.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    cat.style.opacity = 0;
+                    cat.style.transform = 'translateY(20px)';
+                    setTimeout(() => cat.classList.add('hidden'), 300);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
