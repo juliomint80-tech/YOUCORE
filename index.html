@@ -136,11 +136,34 @@
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.3);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .category-card.active::before {
+            transform: scaleX(1);
         }
 
         .category-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-card.active {
+            box-shadow: 0 8px 32px rgba(0, 122, 255, 0.2);
+            border: 1px solid rgba(0, 122, 255, 0.2);
         }
 
         .category-icon {
@@ -237,6 +260,33 @@
             text-decoration: underline;
         }
 
+        .filter-indicator {
+            background: rgba(0, 122, 255, 0.1);
+            border-radius: 50px;
+            padding: 8px 16px;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+
+        .clear-filter {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .clear-filter:hover {
+            background: rgba(0, 122, 255, 0.1);
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -293,7 +343,13 @@
         </section>
 
         <section class="bookmarks-section">
-            <h2 class="section-title">Marcadores destacados</h2>
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2 class="section-title">Marcadores destacados</h2>
+                <div id="filterIndicator" class="filter-indicator" style="display: none;">
+                    <span id="activeFilterText">Filtrado por: </span>
+                    <button id="clearFilter" class="clear-filter">Limpiar filtro</button>
+                </div>
+            </div>
             <div class="bookmarks-grid">
                 <!-- Marcadores se generarán dinámicamente con JavaScript -->
             </div>
@@ -385,10 +441,24 @@
                 icon: "💼"
             },
             {
+                title: "LinkedIn Jobs",
+                description: "Plataforma profesional con ofertas de empleo internacionales",
+                category: "Empleo y prestaciones",
+                url: "https://www.linkedin.com/jobs",
+                icon: "💼"
+            },
+            {
                 title: "Milanuncios",
                 description: "Portal de anuncios clasificados para compra-venta de segunda mano",
                 category: "Segunda mano",
                 url: "https://www.milanuncios.com",
+                icon: "🔄"
+            },
+            {
+                title: "Wallapop",
+                description: "App para comprar y vender productos de segunda mano localmente",
+                category: "Segunda mano",
+                url: "https://www.wallapop.com",
                 icon: "🔄"
             },
             {
@@ -399,11 +469,25 @@
                 icon: "📚"
             },
             {
+                title: "Udemy",
+                description: "Miles de cursos online sobre diferentes temas y habilidades",
+                category: "Aprendizaje y proyectos",
+                url: "https://www.udemy.com",
+                icon: "📚"
+            },
+            {
                 title: "Netflix",
                 description: "Plataforma de streaming con series, películas y documentales",
                 category: "Ocio y entretenimiento",
                 url: "https://www.netflix.com",
                 icon: "🎬"
+            },
+            {
+                title: "Spotify",
+                description: "Servicio de streaming de música, podcasts y audiolibros",
+                category: "Ocio y entretenimiento",
+                url: "https://www.spotify.com",
+                icon: "🎵"
             },
             {
                 title: "ForoCoches",
@@ -413,10 +497,24 @@
                 icon: "🗣️"
             },
             {
+                title: "Reddit",
+                description: "Plataforma de comunidades sobre prácticamente cualquier tema",
+                category: "Desahogo o foros anónimos",
+                url: "https://www.reddit.com",
+                icon: "🗣️"
+            },
+            {
                 title: "Tinder",
                 description: "Aplicación líder para encuentros y citas",
                 category: "Encuentros y citas",
                 url: "https://tinder.com",
+                icon: "💑"
+            },
+            {
+                title: "Badoo",
+                description: "Red social para conocer personas y establecer relaciones",
+                category: "Encuentros y citas",
+                url: "https://badoo.com",
                 icon: "💑"
             },
             {
@@ -432,16 +530,29 @@
                 category: "Tecnología y novedades",
                 url: "https://www.xataka.com",
                 icon: "📱"
+            },
+            {
+                title: "Genbeta",
+                description: "Noticias y análisis sobre aplicaciones y servicios web",
+                category: "Tecnología y novedades",
+                url: "https://www.genbeta.com",
+                icon: "📱"
             }
         ];
+
+        // Estado de la aplicación
+        let currentFilter = null;
+        let allBookmarks = [...featuredBookmarks];
 
         // Función para renderizar categorías
         function renderCategories() {
             const categoriesGrid = document.querySelector('.categories-grid');
+            categoriesGrid.innerHTML = '';
             
             categories.forEach(category => {
                 const categoryCard = document.createElement('div');
-                categoryCard.className = 'category-card';
+                categoryCard.className = `category-card ${currentFilter === category.title ? 'active' : ''}`;
+                categoryCard.setAttribute('data-category', category.title);
                 categoryCard.innerHTML = `
                     <div class="category-icon" style="background-color: ${category.color}20; color: ${category.color}">
                         ${category.icon}
@@ -450,15 +561,30 @@
                     <p class="category-description">${category.description}</p>
                 `;
                 
+                // Añadir evento de clic
+                categoryCard.addEventListener('click', () => {
+                    toggleCategoryFilter(category.title);
+                });
+                
                 categoriesGrid.appendChild(categoryCard);
             });
         }
 
-        // Función para renderizar marcadores destacados
-        function renderFeaturedBookmarks() {
+        // Función para renderizar marcadores
+        function renderBookmarks(bookmarksToRender = allBookmarks) {
             const bookmarksGrid = document.querySelector('.bookmarks-grid');
+            bookmarksGrid.innerHTML = '';
             
-            featuredBookmarks.forEach(bookmark => {
+            if (bookmarksToRender.length === 0) {
+                bookmarksGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <p>No se encontraron marcadores para esta categoría.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            bookmarksToRender.forEach(bookmark => {
                 const bookmarkCard = document.createElement('div');
                 bookmarkCard.className = 'bookmark-card';
                 bookmarkCard.innerHTML = `
@@ -474,12 +600,55 @@
             });
         }
 
-        // Inicializar la página
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCategories();
-            renderFeaturedBookmarks();
+        // Función para alternar filtro de categoría
+        function toggleCategoryFilter(categoryTitle) {
+            if (currentFilter === categoryTitle) {
+                // Si ya está activo, desactivar
+                currentFilter = null;
+            } else {
+                // Activar nuevo filtro
+                currentFilter = categoryTitle;
+            }
             
-            // Funcionalidad de búsqueda básica
+            // Actualizar interfaz
+            updateFilterUI();
+            renderCategories();
+            
+            // Filtrar marcadores
+            if (currentFilter) {
+                const filteredBookmarks = allBookmarks.filter(bookmark => 
+                    bookmark.category === currentFilter
+                );
+                renderBookmarks(filteredBookmarks);
+            } else {
+                renderBookmarks(allBookmarks);
+            }
+        }
+
+        // Función para actualizar la UI del filtro
+        function updateFilterUI() {
+            const filterIndicator = document.getElementById('filterIndicator');
+            const activeFilterText = document.getElementById('activeFilterText');
+            const clearFilterBtn = document.getElementById('clearFilter');
+            
+            if (currentFilter) {
+                filterIndicator.style.display = 'inline-flex';
+                activeFilterText.textContent = `Filtrado por: ${currentFilter}`;
+                
+                // Añadir evento al botón de limpiar filtro
+                clearFilterBtn.onclick = () => {
+                    currentFilter = null;
+                    updateFilterUI();
+                    renderCategories();
+                    renderBookmarks(allBookmarks);
+                };
+            } else {
+                filterIndicator.style.display = 'none';
+            }
+        }
+
+        // Función de búsqueda
+        function setupSearch() {
             const searchBar = document.querySelector('.search-bar');
             searchBar.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
@@ -496,18 +665,26 @@
                     }
                 });
                 
-                // Filtrar marcadores
-                document.querySelectorAll('.bookmark-card').forEach(card => {
-                    const title = card.querySelector('.bookmark-title').textContent.toLowerCase();
-                    const description = card.querySelector('.bookmark-description').textContent.toLowerCase();
-                    
-                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
+                // Filtrar marcadores (teniendo en cuenta el filtro activo)
+                let bookmarksToFilter = currentFilter ? 
+                    allBookmarks.filter(b => b.category === currentFilter) : 
+                    allBookmarks;
+                
+                const filteredBookmarks = bookmarksToFilter.filter(bookmark => {
+                    return bookmark.title.toLowerCase().includes(searchTerm) || 
+                           bookmark.description.toLowerCase().includes(searchTerm) ||
+                           bookmark.category.toLowerCase().includes(searchTerm);
                 });
+                
+                renderBookmarks(filteredBookmarks);
             });
+        }
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderBookmarks();
+            setupSearch();
         });
     </script>
 </body>
