@@ -5,201 +5,508 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOUCORE - Portal de Marcadores Útiles</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        :root {
+            --primary-color: #007AFF;
+            --secondary-color: #5856D6;
+            --accent-color: #FF2D55;
+            --background-color: #FFFFFF;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-primary: #1D1D1F;
+            --text-secondary: #86868B;
+            --glass-effect: blur(20px);
+            --border-radius: 20px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            background-color: white;
-            color: #333;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            min-height: 100vh;
             overflow-x: hidden;
         }
-        header {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: #007bff;
-            padding: 40px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            font-weight: 600;
-        }
-        header p {
-            margin: 10px 0 0;
-            font-size: 1.2em;
-            color: #555;
-        }
-        #search-container {
-            margin: 20px 0;
-            position: relative;
-        }
-        #search-input {
-            width: 100%;
-            max-width: 600px;
-            padding: 15px 20px;
-            font-size: 1.1em;
-            border: 1px solid rgba(0, 123, 255, 0.3);
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            outline: none;
-            transition: box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        #search-input:focus {
-            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.2);
-            border-color: #007bff;
-        }
-        main {
+
+        .container {
             max-width: 1200px;
-            margin: 40px auto;
+            margin: 0 auto;
             padding: 0 20px;
         }
-        .category-grid {
+
+        /* Header Styles */
+        header {
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: var(--glass-effect);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        /* Search Bar */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: var(--glass-effect);
+            box-shadow: var(--shadow);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 8px 32px rgba(0, 122, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Categories Grid */
+        .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
         }
-        .category {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+
+        .category-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-effect);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease;
-            opacity: 0;
-            transform: translateY(20px);
-            will-change: opacity, transform;
+            cursor: pointer;
         }
-        .category.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .category:hover {
+
+        .category-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
-        .category h2 {
-            margin-top: 0;
-            color: #007bff;
-            font-size: 1.5em;
-            font-weight: 500;
-        }
-        .category ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .category ul li {
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 15px;
-            font-size: 1.1em;
-            transition: transform 0.2s ease;
+            font-size: 24px;
         }
-        .category ul li:hover {
-            transform: translateX(5px);
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
-        .category ul li a {
-            color: #007bff;
+
+        .category-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Bookmarks Section */
+        .bookmarks-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .bookmarks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .bookmark-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-effect);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .bookmark-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .bookmark-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .bookmark-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .bookmark-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .bookmark-link {
+            display: inline-block;
+            color: var(--primary-color);
             text-decoration: none;
-            transition: color 0.2s ease;
+            font-weight: 500;
+            font-size: 14px;
         }
-        .category ul li a:hover {
-            color: #0056b3;
+
+        .bookmark-link:hover {
             text-decoration: underline;
         }
+
+        /* Footer */
         footer {
             text-align: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: #555;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            bottom: 0;
-            width: 100%;
+            padding: 40px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .hidden {
-            display: none;
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .bookmarks-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>YOUCORE</h1>
-        <p>Tu portal centralizado de marcadores útiles y temáticos. Descubre recursos sin registro.</p>
-        <div id="search-container">
-            <input type="text" id="search-input" placeholder="Busca categorías o enlaces...">
+        <div class="container">
+            <div class="logo">YOUCORE</div>
+            <div class="tagline">Tu portal centralizado de marcadores útiles</div>
         </div>
     </header>
-    <main>
-        <section class="category-grid">
-            <div class="category">
-                <h2>Empleo y Prestaciones</h2>
-                <ul>
-                    <li><a href="https://www.infojobs.net/" target="_blank" rel="noopener noreferrer">InfoJobs - Ofertas de empleo</a></li>
-                    <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn - Red profesional</a></li>
-                    <li><a href="https://www.sepe.es/" target="_blank" rel="noopener noreferrer">SEPE - Prestaciones y subsidios</a></li>
-                </ul>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Descubre recursos útiles y entretenidos</h1>
+            <p>Accede rápidamente a sitios web y aplicaciones organizados por categorías de interés. Sin necesidad de registro.</p>
+            
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Buscar recursos...">
+                <div class="search-icon">🔍</div>
             </div>
-            <div class="category">
-                <h2>Servicios (Hogar, Salud, Reparaciones)</h2>
-                <ul>
-                    <li><a href="https://www.doctoralia.es/" target="_blank" rel="noopener noreferrer">Doctoralia - Citas médicas</a></li>
-                    <li><a href="https://www.habitissimo.es/" target="_blank" rel="noopener noreferrer">Habitissimo - Reparaciones del hogar</a></li>
-                    <li><a href="https://www.seg-social.es/" target="_blank" rel="noopener noreferrer">Seguridad Social - Servicios de salud</a></li>
-                </ul>
+        </section>
+
+        <section class="categories-section">
+            <h2 class="section-title">Categorías</h2>
+            <div class="categories-grid">
+                <!-- Categorías se generarán dinámicamente con JavaScript -->
             </div>
-            <div class="category">
-                <h2>Segunda Mano</h2>
-                <ul>
-                    <li><a href="https://www.wallapop.com/" target="_blank" rel="noopener noreferrer">Wallapop - Compra y venta local</a></li>
-                    <li><a href="https://www.vibbo.com/" target="_blank" rel="noopener noreferrer">Vibbo - Artículos de segunda mano</a></li>
-                    <li><a href="https://www.ebay.es/" target="_blank" rel="noopener noreferrer">eBay - Subastas y compras</a></li>
-                </ul>
+        </section>
+
+        <section class="bookmarks-section">
+            <h2 class="section-title">Marcadores destacados</h2>
+            <div class="bookmarks-grid">
+                <!-- Marcadores se generarán dinámicamente con JavaScript -->
             </div>
         </section>
     </main>
+
     <footer>
-        <p>&copy; 2025 YOUCORE. Todos los derechos reservados.</p>
+        <div class="container">
+            <p>YOUCORE - Plataforma de descubrimiento de recursos útiles</p>
+            <p>Acceso libre y gratuito para todos</p>
+        </div>
     </footer>
+
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const categories = document.querySelectorAll('.category');
-            categories.forEach((cat, index) => {
-                setTimeout(() => {
-                    cat.classList.add('visible');
-                }, index * 100);
+        // Datos de categorías
+        const categories = [
+            {
+                id: 1,
+                title: "Empleo y prestaciones",
+                description: "Portales de empleo, recursos para desempleados y ayudas económicas",
+                icon: "💼",
+                color: "#007AFF"
+            },
+            {
+                id: 2,
+                title: "Servicios",
+                description: "Hogar, salud, reparaciones y servicios profesionales",
+                icon: "🔧",
+                color: "#34C759"
+            },
+            {
+                id: 3,
+                title: "Segunda mano",
+                description: "Mercados de segunda mano, trueque y economía circular",
+                icon: "🔄",
+                color: "#FF9500"
+            },
+            {
+                id: 4,
+                title: "Aprendizaje y proyectos",
+                description: "Cursos online, tutoriales y recursos para proyectos",
+                icon: "📚",
+                color: "#5856D6"
+            },
+            {
+                id: 5,
+                title: "Ocio y entretenimiento",
+                description: "Streaming, juegos, eventos y actividades recreativas",
+                icon: "🎮",
+                color: "#FF2D55"
+            },
+            {
+                id: 6,
+                title: "Desahogo o foros anónimos",
+                description: "Espacios para compartir experiencias de forma anónima",
+                icon: "🗣️",
+                color: "#AF52DE"
+            },
+            {
+                id: 7,
+                title: "Encuentros y citas",
+                description: "Apps y sitios para conocer personas y establecer relaciones",
+                icon: "💑",
+                color: "#FF3B30"
+            },
+            {
+                id: 8,
+                title: "Amistad y comunidad",
+                description: "Grupos locales, actividades sociales y comunidades online",
+                icon: "👥",
+                color: "#32D74B"
+            },
+            {
+                id: 9,
+                title: "Tecnología y novedades",
+                description: "Últimas tendencias tecnológicas, gadgets y apps",
+                icon: "📱",
+                color: "#0A84FF"
+            }
+        ];
+
+        // Datos de marcadores destacados
+        const featuredBookmarks = [
+            {
+                title: "InfoJobs",
+                description: "Portal de empleo líder en España con miles de ofertas",
+                category: "Empleo y prestaciones",
+                url: "https://www.infojobs.net",
+                icon: "💼"
+            },
+            {
+                title: "Milanuncios",
+                description: "Portal de anuncios clasificados para compra-venta de segunda mano",
+                category: "Segunda mano",
+                url: "https://www.milanuncios.com",
+                icon: "🔄"
+            },
+            {
+                title: "Coursera",
+                description: "Plataforma de cursos online de universidades de prestigio",
+                category: "Aprendizaje y proyectos",
+                url: "https://www.coursera.org",
+                icon: "📚"
+            },
+            {
+                title: "Netflix",
+                description: "Plataforma de streaming con series, películas y documentales",
+                category: "Ocio y entretenimiento",
+                url: "https://www.netflix.com",
+                icon: "🎬"
+            },
+            {
+                title: "ForoCoches",
+                description: "Foro de discusión general y temático muy popular en España",
+                category: "Desahogo o foros anónimos",
+                url: "https://www.forocoches.com",
+                icon: "🗣️"
+            },
+            {
+                title: "Tinder",
+                description: "Aplicación líder para encuentros y citas",
+                category: "Encuentros y citas",
+                url: "https://tinder.com",
+                icon: "💑"
+            },
+            {
+                title: "Meetup",
+                description: "Plataforma para encontrar y crear grupos locales con intereses comunes",
+                category: "Amistad y comunidad",
+                url: "https://www.meetup.com",
+                icon: "👥"
+            },
+            {
+                title: "Xataka",
+                description: "Medio de referencia en tecnología, gadgets y novedades digitales",
+                category: "Tecnología y novedades",
+                url: "https://www.xataka.com",
+                icon: "📱"
+            }
+        ];
+
+        // Función para renderizar categorías
+        function renderCategories() {
+            const categoriesGrid = document.querySelector('.categories-grid');
+            
+            categories.forEach(category => {
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card';
+                categoryCard.innerHTML = `
+                    <div class="category-icon" style="background-color: ${category.color}20; color: ${category.color}">
+                        ${category.icon}
+                    </div>
+                    <h3 class="category-title">${category.title}</h3>
+                    <p class="category-description">${category.description}</p>
+                `;
+                
+                categoriesGrid.appendChild(categoryCard);
             });
-        });
+        }
 
-        const searchInput = document.getElementById('search-input');
-        const categories = document.querySelectorAll('.category');
+        // Función para renderizar marcadores destacados
+        function renderFeaturedBookmarks() {
+            const bookmarksGrid = document.querySelector('.bookmarks-grid');
+            
+            featuredBookmarks.forEach(bookmark => {
+                const bookmarkCard = document.createElement('div');
+                bookmarkCard.className = 'bookmark-card';
+                bookmarkCard.innerHTML = `
+                    <h3 class="bookmark-title">${bookmark.icon} ${bookmark.title}</h3>
+                    <p class="bookmark-description">${bookmark.description}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; color: var(--text-secondary);">${bookmark.category}</span>
+                        <a href="${bookmark.url}" target="_blank" class="bookmark-link">Visitar →</a>
+                    </div>
+                `;
+                
+                bookmarksGrid.appendChild(bookmarkCard);
+            });
+        }
 
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            categories.forEach(cat => {
-                const title = cat.querySelector('h2').textContent.toLowerCase();
-                const links = Array.from(cat.querySelectorAll('li a')).map(a => a.textContent.toLowerCase());
-                const matches = title.includes(searchTerm) || links.some(link => link.includes(searchTerm));
-                if (matches || searchTerm === '') {
-                    cat.classList.remove('hidden');
-                    cat.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    cat.style.opacity = 1;
-                    cat.style.transform = 'translateY(0)';
-                } else {
-                    cat.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    cat.style.opacity = 0;
-                    cat.style.transform = 'translateY(20px)';
-                    setTimeout(() => cat.classList.add('hidden'), 300);
-                }
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderFeaturedBookmarks();
+            
+            // Funcionalidad de búsqueda básica
+            const searchBar = document.querySelector('.search-bar');
+            searchBar.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                // Filtrar categorías
+                document.querySelectorAll('.category-card').forEach(card => {
+                    const title = card.querySelector('.category-title').textContent.toLowerCase();
+                    const description = card.querySelector('.category-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Filtrar marcadores
+                document.querySelectorAll('.bookmark-card').forEach(card => {
+                    const title = card.querySelector('.bookmark-title').textContent.toLowerCase();
+                    const description = card.querySelector('.bookmark-description').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
             });
         });
     </script>
