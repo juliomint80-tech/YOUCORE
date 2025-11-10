@@ -1137,4 +1137,783 @@
             </div>
 
             <button type="button" class="submit-btn donation-submit" id="submitDonation">
-               
+                <span>Continuar con la donación</span>
+                <span>❤️</span>
+            </button>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="font-size: 12px; color: var(--text-secondary);">
+                    Las donaciones ayudan a mantener YOUCORE gratis para todos
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-to-top" id="scrollToTop">
+        ↑
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Datos de categorías
+        const categories = [
+            {
+                id: 1,
+                title: "Empleo y prestaciones",
+                description: "Portales de empleo, recursos para desempleados y ayudas económicas",
+                icon: "💼",
+                color: "#007AFF"
+            },
+            {
+                id: 2,
+                title: "Servicios",
+                description: "Hogar, salud, reparaciones y servicios profesionales",
+                icon: "🔧",
+                color: "#34C759"
+            },
+            {
+                id: 3,
+                title: "Segunda mano",
+                description: "Mercados de segunda mano, trueque y economía circular",
+                icon: "🔄",
+                color: "#FF9500"
+            },
+            {
+                id: 4,
+                title: "Aprendizaje y proyectos",
+                description: "Cursos online, tutoriales y recursos para proyectos",
+                icon: "📚",
+                color: "#5856D6"
+            },
+            {
+                id: 5,
+                title: "Ocio y entretenimiento",
+                description: "Streaming, juegos, eventos y actividades recreativas",
+                icon: "🎮",
+                color: "#FF2D55"
+            },
+            {
+                id: 6,
+                title: "Desahogo o foros anónimos",
+                description: "Espacios para compartir experiencias de forma anónima",
+                icon: "🗣️",
+                color: "#AF52DE"
+            },
+            {
+                id: 7,
+                title: "Encuentros y citas",
+                description: "Apps y sitios para conocer personas y establecer relaciones",
+                icon: "💑",
+                color: "#FF3B30"
+            },
+            {
+                id: 8,
+                title: "Amistad y comunidad",
+                description: "Grupos locales, actividades sociales y comunidades online",
+                icon: "👥",
+                color: "#32D74B"
+            },
+            {
+                id: 9,
+                title: "Tecnología y novedades",
+                description: "Últimas tendencias tecnológicas, gadgets y apps",
+                icon: "📱",
+                color: "#0A84FF"
+            }
+        ];
+
+        // Función para obtener logo de una URL
+        function getLogoUrl(domain) {
+            const logoService = `https://logo.clearbit.com/${domain}`;
+            return logoService;
+        }
+
+        // Datos de marcadores destacados con logos
+        const featuredBookmarks = [
+            {
+                title: "InfoJobs",
+                description: "Portal de empleo líder en España con miles de ofertas actualizadas diariamente",
+                category: "Empleo y prestaciones",
+                url: "https://www.infojobs.net",
+                domain: "infojobs.net",
+                icon: "💼",
+                popularity: 95,
+                addedDate: "2024-01-15",
+                visits: 1250
+            },
+            {
+                title: "LinkedIn Jobs",
+                description: "Plataforma profesional con ofertas de empleo internacionales y networking",
+                category: "Empleo y prestaciones",
+                url: "https://www.linkedin.com/jobs",
+                domain: "linkedin.com",
+                icon: "💼",
+                popularity: 88,
+                addedDate: "2024-01-10",
+                visits: 980
+            },
+            {
+                title: "Milanuncios",
+                description: "Portal de anuncios clasificados para compra-venta de segunda mano",
+                category: "Segunda mano",
+                url: "https://www.milanuncios.com",
+                domain: "milanuncios.com",
+                icon: "🔄",
+                popularity: 92,
+                addedDate: "2024-01-08",
+                visits: 1100
+            },
+            {
+                title: "Wallapop",
+                description: "App para comprar y vender productos de segunda mano localmente",
+                category: "Segunda mano",
+                url: "https://www.wallapop.com",
+                domain: "wallapop.com",
+                icon: "🔄",
+                popularity: 90,
+                addedDate: "2024-01-12",
+                visits: 1050
+            },
+            {
+                title: "Coursera",
+                description: "Plataforma de cursos online de universidades de prestigio mundial",
+                category: "Aprendizaje y proyectos",
+                url: "https://www.coursera.org",
+                domain: "coursera.org",
+                icon: "📚",
+                popularity: 85,
+                addedDate: "2024-01-05",
+                visits: 890
+            },
+            {
+                title: "Udemy",
+                description: "Miles de cursos online sobre diferentes temas y habilidades profesionales",
+                category: "Aprendizaje y proyectos",
+                url: "https://www.udemy.com",
+                domain: "udemy.com",
+                icon: "📚",
+                popularity: 87,
+                addedDate: "2024-01-07",
+                visits: 920
+            },
+            {
+                title: "Netflix",
+                description: "Plataforma de streaming con series, películas y documentales exclusivos",
+                category: "Ocio y entretenimiento",
+                url: "https://www.netflix.com",
+                domain: "netflix.com",
+                icon: "🎬",
+                popularity: 96,
+                addedDate: "2024-01-03",
+                visits: 1300
+            },
+            {
+                title: "Spotify",
+                description: "Servicio de streaming de música, podcasts y audiolibros personalizado",
+                category: "Ocio y entretenimiento",
+                url: "https://www.spotify.com",
+                domain: "spotify.com",
+                icon: "🎵",
+                popularity: 94,
+                addedDate: "2024-01-04",
+                visits: 1250
+            },
+            {
+                title: "ForoCoches",
+                description: "Foro de discusión general y temático muy popular en España",
+                category: "Desahogo o foros anónimos",
+                url: "https://www.forocoches.com",
+                domain: "forocoches.com",
+                icon: "🗣️",
+                popularity: 82,
+                addedDate: "2024-01-09",
+                visits: 780
+            },
+            {
+                title: "Reddit",
+                description: "Plataforma de comunidades sobre prácticamente cualquier tema imaginable",
+                category: "Desahogo o foros anónimos",
+                url: "https://www.reddit.com",
+                domain: "reddit.com",
+                icon: "🗣️",
+                popularity: 89,
+                addedDate: "2024-01-06",
+                visits: 950
+            },
+            {
+                title: "Tinder",
+                description: "Aplicación líder mundial para encuentros y citas casuales",
+                category: "Encuentros y citas",
+                url: "https://tinder.com",
+                domain: "tinder.com",
+                icon: "💑",
+                popularity: 91,
+                addedDate: "2024-01-11",
+                visits: 1000
+            },
+            {
+                title: "Badoo",
+                description: "Red social para conocer personas y establecer relaciones cercanas",
+                category: "Encuentros y citas",
+                url: "https://badoo.com",
+                domain: "badoo.com",
+                icon: "💑",
+                popularity: 84,
+                addedDate: "2024-01-13",
+                visits: 870
+            },
+            {
+                title: "Meetup",
+                description: "Plataforma para encontrar y crear grupos locales con intereses comunes",
+                category: "Amistad y comunidad",
+                url: "https://www.meetup.com",
+                domain: "meetup.com",
+                icon: "👥",
+                popularity: 79,
+                addedDate: "2024-01-14",
+                visits: 720
+            },
+            {
+                title: "Xataka",
+                description: "Medio de referencia en tecnología, gadgets y novedades digitales",
+                category: "Tecnología y novedades",
+                url: "https://www.xataka.com",
+                domain: "xataka.com",
+                icon: "📱",
+                popularity: 86,
+                addedDate: "2024-01-02",
+                visits: 910
+            },
+            {
+                title: "Genbeta",
+                description: "Noticias y análisis profundos sobre aplicaciones y servicios web",
+                category: "Tecnología y novedades",
+                url: "https://www.genbeta.com",
+                domain: "genbeta.com",
+                icon: "📱",
+                popularity: 81,
+                addedDate: "2024-01-16",
+                visits: 760
+            }
+        ];
+
+        // Añadir logos a los marcadores
+        const featuredBookmarksWithLogos = featuredBookmarks.map(bookmark => ({
+            ...bookmark,
+            logo: getLogoUrl(bookmark.domain)
+        }));
+
+        // Estado de la aplicación
+        let currentFilter = null;
+        let currentSort = 'default';
+        let allBookmarks = [...featuredBookmarksWithLogos];
+        let selectedDonationAmount = 5;
+        let selectedPaymentMethod = 'paypal';
+
+        // Función para mostrar notificaciones toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Función para actualizar estadísticas
+        function updateStats() {
+            document.getElementById('bookmarksCount').textContent = `${allBookmarks.length} marcadores`;
+            document.getElementById('categoriesCount').textContent = `${categories.length} categorías`;
+        }
+
+        // Función para contar marcadores por categoría
+        function getBookmarksCountByCategory(categoryTitle) {
+            return allBookmarks.filter(bookmark => bookmark.category === categoryTitle).length;
+        }
+
+        // Función para renderizar categorías
+        function renderCategories() {
+            const categoriesGrid = document.querySelector('.categories-grid');
+            categoriesGrid.innerHTML = '';
+            
+            categories.forEach(category => {
+                const bookmarksCount = getBookmarksCountByCategory(category.title);
+                
+                const categoryCard = document.createElement('div');
+                categoryCard.className = `category-card ${currentFilter === category.title ? 'active' : ''}`;
+                categoryCard.setAttribute('data-category', category.title);
+                categoryCard.innerHTML = `
+                    <div class="category-icon" style="background-color: ${category.color}20; color: ${category.color}">
+                        ${category.icon}
+                    </div>
+                    <div class="category-count">${bookmarksCount}</div>
+                    <h3 class="category-title">${category.title}</h3>
+                    <p class="category-description">${category.description}</p>
+                `;
+                
+                categoryCard.addEventListener('click', () => {
+                    toggleCategoryFilter(category.title);
+                });
+                
+                categoriesGrid.appendChild(categoryCard);
+            });
+        }
+
+        // Función para ordenar marcadores
+        function sortBookmarks(bookmarks, sortType) {
+            switch(sortType) {
+                case 'popular':
+                    return [...bookmarks].sort((a, b) => b.popularity - a.popularity);
+                default:
+                    return bookmarks;
+            }
+        }
+
+        // Función para renderizar marcadores
+        function renderBookmarks(bookmarksToRender = allBookmarks, sortType = 'default') {
+            const bookmarksGrid = document.querySelector('.bookmarks-grid');
+            bookmarksGrid.innerHTML = '';
+            
+            const sortedBookmarks = sortBookmarks(bookmarksToRender, sortType);
+            
+            if (sortedBookmarks.length === 0) {
+                bookmarksGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <p>No se encontraron marcadores para esta categoría.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            sortedBookmarks.forEach(bookmark => {
+                const bookmarkLink = document.createElement('a');
+                bookmarkLink.className = 'bookmark-card';
+                bookmarkLink.href = bookmark.url;
+                bookmarkLink.target = '_blank';
+                bookmarkLink.rel = 'noopener noreferrer';
+                
+                bookmarkLink.innerHTML = `
+                    <div class="logo-container">
+                        <div class="loading-logo">
+                            <div class="loading-spinner"></div>
+                            Cargando logo...
+                        </div>
+                        <img class="website-logo" src="${bookmark.logo}" alt="${bookmark.title}" style="display: none;" 
+                             onload="this.style.display='block'; this.previousElementSibling.style.display='none';" 
+                             onerror="this.previousElementSibling.innerHTML='🏢 Logo no disponible'; this.previousElementSibling.style.background='#f5f5f7';">
+                    </div>
+                    <div class="bookmark-content">
+                        <div class="bookmark-header">
+                            <div class="bookmark-icon">${bookmark.icon}</div>
+                            <h3 class="bookmark-title">${bookmark.title}</h3>
+                        </div>
+                        <p class="bookmark-description">${bookmark.description}</p>
+                        <div class="bookmark-footer">
+                            <span class="bookmark-category">${bookmark.category}</span>
+                            <div class="bookmark-meta">
+                                <span>🔥 ${bookmark.popularity}%</span>
+                                <span>👁️ ${bookmark.visits}</span>
+                                <div class="external-link-icon">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M10 2H14V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path d="M14 2L6 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        <path d="M14 8V14H2V2H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                bookmarksGrid.appendChild(bookmarkLink);
+            });
+        }
+
+        // Función para alternar filtro de categoría (ACTUALIZADA)
+        function toggleCategoryFilter(categoryTitle) {
+            const categoriesGrid = document.querySelector('.categories-grid');
+            const categoryCards = document.querySelectorAll('.category-card');
+            const showAllButton = document.querySelector('.show-all-categories');
+            
+            if (currentFilter === categoryTitle) {
+                // Si ya está seleccionada, quitar el filtro
+                currentFilter = null;
+                categoryCards.forEach(card => {
+                    card.classList.remove('hidden');
+                    card.classList.remove('active');
+                });
+                showAllButton.classList.remove('show');
+                renderBookmarks(allBookmarks, currentSort);
+                showToast('Mostrando todas las categorías', 'success');
+            } else {
+                // Aplicar nuevo filtro
+                currentFilter = categoryTitle;
+                
+                categoryCards.forEach(card => {
+                    if (card.getAttribute('data-category') === categoryTitle) {
+                        card.classList.add('active');
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                        card.classList.remove('active');
+                    }
+                });
+                
+                showAllButton.classList.add('show');
+                
+                const filteredBookmarks = allBookmarks.filter(bookmark => 
+                    bookmark.category === currentFilter
+                );
+                renderBookmarks(filteredBookmarks, currentSort);
+                showToast(`Filtrado por: ${categoryTitle}`, 'success');
+            }
+            
+            updateFilterUI();
+        }
+
+        // Función para mostrar todas las categorías (NUEVA)
+        function showAllCategories() {
+            const categoryCards = document.querySelectorAll('.category-card');
+            const showAllButton = document.querySelector('.show-all-categories');
+            
+            currentFilter = null;
+            categoryCards.forEach(card => {
+                card.classList.remove('hidden');
+                card.classList.remove('active');
+            });
+            showAllButton.classList.remove('show');
+            renderBookmarks(allBookmarks, currentSort);
+            updateFilterUI();
+            showToast('Mostrando todas las categorías', 'success');
+        }
+
+        // Función para actualizar la UI del filtro
+        function updateFilterUI() {
+            const filterIndicator = document.getElementById('filterIndicator');
+            const activeFilterText = document.getElementById('activeFilterText');
+            const clearFilterBtn = document.getElementById('clearFilter');
+            
+            if (currentFilter) {
+                filterIndicator.style.display = 'inline-flex';
+                activeFilterText.textContent = `Filtrado por: ${currentFilter}`;
+                
+                clearFilterBtn.onclick = () => {
+                    showAllCategories();
+                };
+            } else {
+                filterIndicator.style.display = 'none';
+            }
+        }
+
+        // Función para configurar acciones rápidas
+        function setupQuickActions() {
+            document.getElementById('showAll').addEventListener('click', () => {
+                currentFilter = null;
+                currentSort = 'default';
+                updateQuickActions('showAll');
+                updateFilterUI();
+                renderCategories();
+                renderBookmarks(allBookmarks);
+                showToast('Mostrando todos los marcadores', 'success');
+            });
+
+            document.getElementById('showPopular').addEventListener('click', () => {
+                currentSort = 'popular';
+                updateQuickActions('showPopular');
+                const bookmarksToShow = currentFilter ? 
+                    allBookmarks.filter(b => b.category === currentFilter) : 
+                    allBookmarks;
+                renderBookmarks(bookmarksToShow, 'popular');
+                showToast('Ordenado por popularidad', 'success');
+            });
+        }
+
+        // Función para actualizar estado de acciones rápidas
+        function updateQuickActions(activeAction) {
+            document.querySelectorAll('.quick-action').forEach(action => {
+                action.classList.remove('active');
+            });
+            if (activeAction) {
+                document.getElementById(activeAction).classList.add('active');
+            }
+        }
+
+        // Función para manejar el modal de contacto
+        function setupContactModal() {
+            const modal = document.getElementById('contactModal');
+            const openBtn = document.getElementById('openContactModal');
+            const closeBtn = document.getElementById('closeContactModal');
+            const form = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Abrir modal
+            openBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Cerrar modal
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Cerrar al hacer clic fuera
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Manejar envío del formulario
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    subject: document.getElementById('subject').value,
+                    message: document.getElementById('message').value
+                };
+
+                // Validación básica
+                if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+                    showToast('Por favor, completa todos los campos', 'error');
+                    return;
+                }
+
+                // Mostrar loading
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<div class="loading-spinner"></div><span>Enviando...</span>';
+
+                try {
+                    // Enviar usando Formspree
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        showToast('¡Mensaje enviado! Te contactaremos pronto.', 'success');
+                        form.reset();
+                        modal.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    } else {
+                        throw new Error('Error en el envío');
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('Error al enviar el mensaje. Intenta nuevamente.', 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Enviar mensaje</span><span>📨</span>';
+                }
+            });
+        }
+
+        // Función para manejar el modal de donaciones
+        function setupDonationModal() {
+            const modal = document.getElementById('donationModal');
+            const openBtn = document.getElementById('openDonationModal');
+            const closeBtn = document.getElementById('closeDonationModal');
+            const submitBtn = document.getElementById('submitDonation');
+            const customAmountInput = document.getElementById('customAmount');
+
+            // Abrir modal
+            openBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                // Resetear selección
+                selectedDonationAmount = 5;
+                updateDonationSelection();
+            });
+
+            // Cerrar modal
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Cerrar al hacer clic fuera
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Manejar selección de opciones de donación
+            document.querySelectorAll('.donation-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    selectedDonationAmount = parseFloat(option.dataset.amount);
+                    customAmountInput.value = '';
+                    updateDonationSelection();
+                });
+            });
+
+            // Manejar monto personalizado
+            customAmountInput.addEventListener('input', () => {
+                if (customAmountInput.value) {
+                    selectedDonationAmount = parseFloat(customAmountInput.value);
+                    document.querySelectorAll('.donation-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                }
+            });
+
+            // Manejar selección de método de pago
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.addEventListener('click', () => {
+                    selectedPaymentMethod = method.dataset.method;
+                    document.querySelectorAll('.payment-method').forEach(m => {
+                        m.classList.remove('selected');
+                    });
+                    method.classList.add('selected');
+                });
+            });
+
+            // Manejar envío de donación
+            submitBtn.addEventListener('click', () => {
+                if (!selectedDonationAmount || selectedDonationAmount < 1) {
+                    showToast('Por favor, selecciona un monto válido', 'error');
+                    return;
+                }
+
+                // Simular procesamiento de pago
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<div class="loading-spinner"></div><span>Procesando...</span>';
+
+                setTimeout(() => {
+                    showToast(`¡Gracias por tu donación de ${selectedDonationAmount}€! ❤️`, 'success');
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Continuar con la donación</span><span>❤️</span>';
+                    
+                    // En un caso real, aquí redirigirías a PayPal, Stripe, etc.
+                    // Por ahora solo mostramos un mensaje de éxito
+                }, 2000);
+            });
+        }
+
+        // Función para actualizar la selección de donación
+        function updateDonationSelection() {
+            document.querySelectorAll('.donation-option').forEach(option => {
+                if (parseFloat(option.dataset.amount) === selectedDonationAmount) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        }
+
+        // Función de búsqueda con debounce
+        function setupSearch() {
+            const searchBar = document.querySelector('.search-bar');
+            let searchTimeout;
+            
+            searchBar.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    
+                    // Filtrar categorías
+                    document.querySelectorAll('.category-card').forEach(card => {
+                        const title = card.querySelector('.category-title').textContent.toLowerCase();
+                        const description = card.querySelector('.category-description').textContent.toLowerCase();
+                        
+                        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    
+                    // Filtrar marcadores
+                    let bookmarksToFilter = currentFilter ? 
+                        allBookmarks.filter(b => b.category === currentFilter) : 
+                        allBookmarks;
+                    
+                    const filteredBookmarks = bookmarksToFilter.filter(bookmark => {
+                        return bookmark.title.toLowerCase().includes(searchTerm) || 
+                               bookmark.description.toLowerCase().includes(searchTerm) ||
+                               bookmark.category.toLowerCase().includes(searchTerm);
+                    });
+                    
+                    renderBookmarks(filteredBookmarks, currentSort);
+                }, 300);
+            });
+        }
+
+        // Función para scroll to top
+        function setupScrollToTop() {
+            const scrollBtn = document.getElementById('scrollToTop');
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.classList.add('show');
+                } else {
+                    scrollBtn.classList.remove('show');
+                }
+            });
+            
+            scrollBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Inicializar la página (ACTUALIZADA)
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+            renderCategories();
+            renderBookmarks();
+            setupSearch();
+            setupQuickActions();
+            setupContactModal();
+            setupDonationModal();
+            setupScrollToTop();
+            
+            // Añadir botón para mostrar todas las categorías
+            const categoriesSection = document.querySelector('.categories-section');
+            const showAllButton = document.createElement('div');
+            showAllButton.className = 'show-all-categories';
+            showAllButton.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <span>📋</span>
+                    <span>Mostrar todas las categorías</span>
+                </div>
+            `;
+            showAllButton.addEventListener('click', showAllCategories);
+            categoriesSection.appendChild(showAllButton);
+            
+            // Configurar enlaces del footer
+            document.getElementById('aboutLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                showToast('YOUCORE - Plataforma de descubrimiento de recursos útiles', 'success');
+            });
+            
+            document.getElementById('suggestLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('contactModal').classList.add('active');
+                document.getElementById('subject').value = 'sugerencia';
+            });
+            
+            document.getElementById('contactLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('contactModal').classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
