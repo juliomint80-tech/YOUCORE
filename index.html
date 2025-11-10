@@ -12,6 +12,7 @@
             --accent-color: #FF2D55;
             --success-color: #34C759;
             --warning-color: #FF9500;
+            --donation-color: #FF9500;
             --background-color: #FFFFFF;
             --card-bg: rgba(255, 255, 255, 0.7);
             --text-primary: #1D1D1F;
@@ -96,6 +97,27 @@
         .contact-btn:hover {
             background: var(--secondary-color);
             transform: translateY(-2px);
+        }
+
+        .donate-btn {
+            background: var(--donation-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .donate-btn:hover {
+            background: #E57C00;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 149, 0, 0.3);
         }
 
         .stats {
@@ -504,7 +526,7 @@
             visibility: visible;
         }
 
-        .contact-modal {
+        .contact-modal, .donation-modal {
             background: var(--card-bg);
             backdrop-filter: var(--glass-effect);
             border-radius: var(--border-radius);
@@ -519,7 +541,8 @@
             transition: transform 0.3s ease;
         }
 
-        .modal-overlay.active .contact-modal {
+        .modal-overlay.active .contact-modal,
+        .modal-overlay.active .donation-modal {
             transform: translateY(0);
         }
 
@@ -609,6 +632,110 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        /* Donation Options */
+        .donation-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .donation-option {
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius);
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .donation-option:hover {
+            border-color: var(--donation-color);
+            transform: translateY(-2px);
+        }
+
+        .donation-option.selected {
+            border-color: var(--donation-color);
+            background: rgba(255, 149, 0, 0.1);
+        }
+
+        .donation-amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--donation-color);
+        }
+
+        .donation-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .custom-amount {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .custom-amount-input {
+            flex: 1;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .custom-amount .form-input {
+            padding-left: 30px;
+        }
+
+        .payment-methods {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .payment-method {
+            width: 50px;
+            height: 30px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--donation-color);
+        }
+
+        .payment-method.selected {
+            border-color: var(--donation-color);
+            background: rgba(255, 149, 0, 0.1);
+        }
+
+        .donation-submit {
+            background: var(--donation-color);
+        }
+
+        .donation-submit:hover {
+            background: #E57C00;
         }
 
         /* Toast Notifications */
@@ -743,6 +870,7 @@
             
             .header-actions {
                 justify-content: center;
+                flex-wrap: wrap;
             }
             
             .stats {
@@ -767,9 +895,17 @@
                 max-height: 50px;
             }
 
-            .contact-modal {
+            .contact-modal, .donation-modal {
                 padding: 20px;
                 margin: 20px;
+            }
+
+            .donation-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .payment-methods {
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -793,6 +929,10 @@
                             <span id="categoriesCount">0 categorías</span>
                         </div>
                     </div>
+                    <button class="donate-btn" id="openDonationModal">
+                        <span>❤️</span>
+                        <span>Donar</span>
+                    </button>
                     <button class="contact-btn" id="openContactModal">
                         <span>📧</span>
                         <span>Contactar</span>
@@ -892,6 +1032,69 @@
                     <span>📨</span>
                 </button>
             </form>
+        </div>
+    </div>
+
+    <!-- Donation Modal -->
+    <div class="modal-overlay" id="donationModal">
+        <div class="donation-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Apoya YOUCORE</h2>
+                <button class="close-modal" id="closeDonationModal">×</button>
+            </div>
+            <div class="form-group">
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 25px;">
+                    Si YOUCORE te ha sido útil, considera hacer una donación para ayudar a mantener el proyecto. ¡Cada aporte cuenta! ❤️
+                </p>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Selecciona un monto</label>
+                <div class="donation-options">
+                    <div class="donation-option" data-amount="3">
+                        <div class="donation-amount">3€</div>
+                        <div class="donation-description">Un café ☕</div>
+                    </div>
+                    <div class="donation-option" data-amount="5">
+                        <div class="donation-amount">5€</div>
+                        <div class="donation-description">¡Gracias! 🙏</div>
+                    </div>
+                    <div class="donation-option" data-amount="10">
+                        <div class="donation-amount">10€</div>
+                        <div class="donation-description">Gran apoyo 🚀</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">O ingresa un monto personalizado</label>
+                <div class="custom-amount">
+                    <div style="position: relative; flex: 1;">
+                        <span class="currency-symbol">€</span>
+                        <input type="number" class="form-input custom-amount-input" id="customAmount" placeholder="0.00" min="1" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Método de pago</label>
+                <div class="payment-methods">
+                    <div class="payment-method selected" data-method="paypal">PP</div>
+                    <div class="payment-method" data-method="stripe">💳</div>
+                    <div class="payment-method" data-method="crypto">₿</div>
+                </div>
+            </div>
+
+            <button type="button" class="submit-btn donation-submit" id="submitDonation">
+                <span>Continuar con la donación</span>
+                <span>❤️</span>
+            </button>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="font-size: 12px; color: var(--text-secondary);">
+                    Las donaciones ayudan a mantener YOUCORE gratis para todos
+                </p>
+            </div>
         </div>
     </div>
 
@@ -1154,6 +1357,8 @@
         let currentFilter = null;
         let currentSort = 'default';
         let allBookmarks = [...featuredBookmarksWithLogos];
+        let selectedDonationAmount = 5;
+        let selectedPaymentMethod = 'paypal';
 
         // Función para mostrar notificaciones toast
         function showToast(message, type = 'success') {
@@ -1430,6 +1635,102 @@
             });
         }
 
+        // Función para manejar el modal de donaciones
+        function setupDonationModal() {
+            const modal = document.getElementById('donationModal');
+            const openBtn = document.getElementById('openDonationModal');
+            const closeBtn = document.getElementById('closeDonationModal');
+            const submitBtn = document.getElementById('submitDonation');
+            const customAmountInput = document.getElementById('customAmount');
+
+            // Abrir modal
+            openBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                // Resetear selección
+                selectedDonationAmount = 5;
+                updateDonationSelection();
+            });
+
+            // Cerrar modal
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Cerrar al hacer clic fuera
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Manejar selección de opciones de donación
+            document.querySelectorAll('.donation-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    selectedDonationAmount = parseFloat(option.dataset.amount);
+                    customAmountInput.value = '';
+                    updateDonationSelection();
+                });
+            });
+
+            // Manejar monto personalizado
+            customAmountInput.addEventListener('input', () => {
+                if (customAmountInput.value) {
+                    selectedDonationAmount = parseFloat(customAmountInput.value);
+                    document.querySelectorAll('.donation-option').forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                }
+            });
+
+            // Manejar selección de método de pago
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.addEventListener('click', () => {
+                    selectedPaymentMethod = method.dataset.method;
+                    document.querySelectorAll('.payment-method').forEach(m => {
+                        m.classList.remove('selected');
+                    });
+                    method.classList.add('selected');
+                });
+            });
+
+            // Manejar envío de donación
+            submitBtn.addEventListener('click', () => {
+                if (!selectedDonationAmount || selectedDonationAmount < 1) {
+                    showToast('Por favor, selecciona un monto válido', 'error');
+                    return;
+                }
+
+                // Simular procesamiento de pago
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<div class="loading-spinner"></div><span>Procesando...</span>';
+
+                setTimeout(() => {
+                    showToast(`¡Gracias por tu donación de ${selectedDonationAmount}€! ❤️`, 'success');
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Continuar con la donación</span><span>❤️</span>';
+                    
+                    // En un caso real, aquí redirigirías a PayPal, Stripe, etc.
+                    // Por ahora solo mostramos un mensaje de éxito
+                }, 2000);
+            });
+        }
+
+        // Función para actualizar la selección de donación
+        function updateDonationSelection() {
+            document.querySelectorAll('.donation-option').forEach(option => {
+                if (parseFloat(option.dataset.amount) === selectedDonationAmount) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        }
+
         // Función de búsqueda con debounce
         function setupSearch() {
             const searchBar = document.querySelector('.search-bar');
@@ -1496,6 +1797,7 @@
             setupSearch();
             setupQuickActions();
             setupContactModal();
+            setupDonationModal();
             setupScrollToTop();
             
             // Configurar enlaces del footer
