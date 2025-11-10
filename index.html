@@ -872,18 +872,18 @@
                 <h2 class="modal-title">Enviar Sugerencia</h2>
                 <button class="close-modal" id="closeContactModal">×</button>
             </div>
-            <form id="contactForm">
+            <form id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
                 <div class="form-group">
                     <label class="form-label" for="name">Tu nombre</label>
-                    <input type="text" class="form-input" id="name" placeholder="¿Cómo te llamas?" required>
+                    <input type="text" class="form-input" id="name" name="name" placeholder="¿Cómo te llamas?" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="email">Tu email</label>
-                    <input type="email" class="form-input" id="email" placeholder="tu@email.com" required>
+                    <input type="email" class="form-input" id="email" name="email" placeholder="tu@email.com" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="subject">Asunto</label>
-                    <select class="form-input" id="subject" required>
+                    <select class="form-input" id="subject" name="subject" required>
                         <option value="">Selecciona una opción</option>
                         <option value="sugerencia">Sugerir nuevo recurso</option>
                         <option value="problema">Reportar problema</option>
@@ -893,7 +893,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="message">Mensaje</label>
-                    <textarea class="form-textarea" id="message" placeholder="Describe tu sugerencia, comentario o problema..." required></textarea>
+                    <textarea class="form-textarea" id="message" name="message" placeholder="Describe tu sugerencia, comentario o problema..." required></textarea>
                 </div>
                 <button type="submit" class="submit-btn" id="submitBtn">
                     <span>Enviar mensaje</span>
@@ -1412,7 +1412,7 @@
                 }
             });
 
-            // Enviar formulario
+            // Manejar envío del formulario
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -1429,25 +1429,36 @@
                     return;
                 }
 
-                // Simular envío (en un caso real, aquí harías una petición a un servidor)
+                // Mostrar loading
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<div class="loading-spinner"></div><span>Enviando...</span>';
 
-                // Simular delay de red
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                try {
+                    // Enviar usando Formspree
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
 
-                // Aquí normalmente enviarías el email a juliomint80@gmail.com
-                // Por ahora solo mostramos un mensaje de éxito
-                showToast('¡Mensaje enviado! Te contactaremos pronto.', 'success');
-                
-                // Resetear formulario
-                form.reset();
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>Enviar mensaje</span><span>📨</span>';
-                
-                // Cerrar modal
-                modal.classList.remove('active');
-                document.body.style.overflow = 'auto';
+                    if (response.ok) {
+                        showToast('¡Mensaje enviado! Te contactaremos pronto.', 'success');
+                        form.reset();
+                        modal.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    } else {
+                        throw new Error('Error en el envío');
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('Error al enviar el mensaje. Intenta nuevamente.', 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Enviar mensaje</span><span>📨</span>';
+                }
             });
         }
 
