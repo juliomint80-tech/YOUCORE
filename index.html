@@ -73,6 +73,31 @@
             margin-top: 5px;
         }
 
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .contact-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .contact-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
         .stats {
             display: flex;
             gap: 20px;
@@ -420,32 +445,6 @@
             opacity: 1;
         }
 
-        .favorite-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: var(--glass-effect);
-            z-index: 2;
-        }
-
-        .favorite-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .favorite-btn.active {
-            color: var(--accent-color);
-        }
-
         .loading-logo {
             display: flex;
             align-items: center;
@@ -480,6 +479,136 @@
 
         .clear-filter:hover {
             background: rgba(0, 122, 255, 0.1);
+        }
+
+        /* Contact Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .contact-modal {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-effect);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .contact-modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: var(--glass-effect);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .submit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* Toast Notifications */
@@ -612,6 +741,10 @@
                 text-align: center;
             }
             
+            .header-actions {
+                justify-content: center;
+            }
+            
             .stats {
                 justify-content: center;
             }
@@ -633,6 +766,11 @@
                 max-width: 100px;
                 max-height: 50px;
             }
+
+            .contact-modal {
+                padding: 20px;
+                margin: 20px;
+            }
         }
     </style>
 </head>
@@ -644,15 +782,21 @@
                     <div class="logo">YOUCORE</div>
                     <div class="tagline">Tu portal centralizado de marcadores útiles</div>
                 </div>
-                <div class="stats">
-                    <div class="stat-item" id="totalBookmarks">
-                        <span>🔖</span>
-                        <span id="bookmarksCount">0 marcadores</span>
+                <div class="header-actions">
+                    <div class="stats">
+                        <div class="stat-item" id="totalBookmarks">
+                            <span>🔖</span>
+                            <span id="bookmarksCount">0 marcadores</span>
+                        </div>
+                        <div class="stat-item" id="totalCategories">
+                            <span>📁</span>
+                            <span id="categoriesCount">0 categorías</span>
+                        </div>
                     </div>
-                    <div class="stat-item" id="totalCategories">
-                        <span>📁</span>
-                        <span id="categoriesCount">0 categorías</span>
-                    </div>
+                    <button class="contact-btn" id="openContactModal">
+                        <span>📧</span>
+                        <span>Contactar</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -680,10 +824,6 @@
                 <div class="quick-action" id="showRecent">
                     <span>🕒</span>
                     <span>Recientes</span>
-                </div>
-                <div class="quick-action" id="showFavorites">
-                    <span>⭐</span>
-                    <span>Favoritos</span>
                 </div>
                 <div class="quick-action" id="randomBookmark">
                     <span>🎲</span>
@@ -724,6 +864,44 @@
             </div>
         </div>
     </footer>
+
+    <!-- Contact Modal -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="contact-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Enviar Sugerencia</h2>
+                <button class="close-modal" id="closeContactModal">×</button>
+            </div>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label class="form-label" for="name">Tu nombre</label>
+                    <input type="text" class="form-input" id="name" placeholder="¿Cómo te llamas?" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="email">Tu email</label>
+                    <input type="email" class="form-input" id="email" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="subject">Asunto</label>
+                    <select class="form-input" id="subject" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="sugerencia">Sugerir nuevo recurso</option>
+                        <option value="problema">Reportar problema</option>
+                        <option value="colaboracion">Propuesta de colaboración</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="message">Mensaje</label>
+                    <textarea class="form-textarea" id="message" placeholder="Describe tu sugerencia, comentario o problema..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span>Enviar mensaje</span>
+                    <span>📨</span>
+                </button>
+            </form>
+        </div>
+    </div>
 
     <div class="scroll-to-top" id="scrollToTop">
         ↑
@@ -983,8 +1161,6 @@
         // Estado de la aplicación
         let currentFilter = null;
         let currentSort = 'default';
-        let showFavorites = false;
-        let favorites = JSON.parse(localStorage.getItem('youcore_favorites')) || [];
         let allBookmarks = [...featuredBookmarksWithLogos];
 
         // Función para mostrar notificaciones toast
@@ -1008,25 +1184,6 @@
         // Función para contar marcadores por categoría
         function getBookmarksCountByCategory(categoryTitle) {
             return allBookmarks.filter(bookmark => bookmark.category === categoryTitle).length;
-        }
-
-        // Función para alternar favorito
-        function toggleFavorite(bookmarkTitle) {
-            const index = favorites.indexOf(bookmarkTitle);
-            if (index > -1) {
-                favorites.splice(index, 1);
-                showToast('Eliminado de favoritos', 'success');
-            } else {
-                favorites.push(bookmarkTitle);
-                showToast('Añadido a favoritos', 'success');
-            }
-            localStorage.setItem('youcore_favorites', JSON.stringify(favorites));
-            renderBookmarks();
-        }
-
-        // Función para verificar si es favorito
-        function isFavorite(bookmarkTitle) {
-            return favorites.includes(bookmarkTitle);
         }
 
         // Función para renderizar categorías
@@ -1077,21 +1234,12 @@
             const bookmarksGrid = document.querySelector('.bookmarks-grid');
             bookmarksGrid.innerHTML = '';
             
-            let filteredBookmarks = bookmarksToRender;
-            
-            // Aplicar filtro de favoritos si está activo
-            if (showFavorites) {
-                filteredBookmarks = filteredBookmarks.filter(bookmark => 
-                    isFavorite(bookmark.title)
-                );
-            }
-            
-            const sortedBookmarks = sortBookmarks(filteredBookmarks, sortType);
+            const sortedBookmarks = sortBookmarks(bookmarksToRender, sortType);
             
             if (sortedBookmarks.length === 0) {
                 bookmarksGrid.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
-                        <p>${showFavorites ? 'No tienes marcadores favoritos' : 'No se encontraron marcadores para esta categoría'}</p>
+                        <p>No se encontraron marcadores para esta categoría.</p>
                     </div>
                 `;
                 return;
@@ -1104,12 +1252,7 @@
                 bookmarkLink.target = '_blank';
                 bookmarkLink.rel = 'noopener noreferrer';
                 
-                const isFav = isFavorite(bookmark.title);
-                
                 bookmarkLink.innerHTML = `
-                    <button class="favorite-btn ${isFav ? 'active' : ''}" onclick="event.preventDefault(); toggleFavorite('${bookmark.title}')">
-                        ${isFav ? '★' : '☆'}
-                    </button>
                     <div class="logo-container">
                         <div class="loading-logo">
                             <div class="loading-spinner"></div>
@@ -1192,7 +1335,6 @@
         function setupQuickActions() {
             document.getElementById('showAll').addEventListener('click', () => {
                 currentFilter = null;
-                showFavorites = false;
                 currentSort = 'default';
                 updateQuickActions('showAll');
                 updateFilterUI();
@@ -1221,18 +1363,6 @@
                 showToast('Ordenado por fecha', 'success');
             });
 
-            document.getElementById('showFavorites').addEventListener('click', () => {
-                showFavorites = !showFavorites;
-                updateQuickActions('showFavorites');
-                if (showFavorites) {
-                    renderBookmarks(allBookmarks, currentSort);
-                    showToast('Mostrando favoritos', 'success');
-                } else {
-                    renderBookmarks(allBookmarks, currentSort);
-                    showToast('Mostrando todos', 'success');
-                }
-            });
-
             document.getElementById('randomBookmark').addEventListener('click', () => {
                 currentSort = 'random';
                 updateQuickActions('randomBookmark');
@@ -1252,6 +1382,73 @@
             if (activeAction) {
                 document.getElementById(activeAction).classList.add('active');
             }
+        }
+
+        // Función para manejar el modal de contacto
+        function setupContactModal() {
+            const modal = document.getElementById('contactModal');
+            const openBtn = document.getElementById('openContactModal');
+            const closeBtn = document.getElementById('closeContactModal');
+            const form = document.getElementById('contactForm');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Abrir modal
+            openBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Cerrar modal
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            // Cerrar al hacer clic fuera
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Enviar formulario
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    subject: document.getElementById('subject').value,
+                    message: document.getElementById('message').value
+                };
+
+                // Validación básica
+                if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+                    showToast('Por favor, completa todos los campos', 'error');
+                    return;
+                }
+
+                // Simular envío (en un caso real, aquí harías una petición a un servidor)
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<div class="loading-spinner"></div><span>Enviando...</span>';
+
+                // Simular delay de red
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Aquí normalmente enviarías el email a juliomint80@gmail.com
+                // Por ahora solo mostramos un mensaje de éxito
+                showToast('¡Mensaje enviado! Te contactaremos pronto.', 'success');
+                
+                // Resetear formulario
+                form.reset();
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Enviar mensaje</span><span>📨</span>';
+                
+                // Cerrar modal
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
         }
 
         // Función de búsqueda con debounce
@@ -1280,12 +1477,6 @@
                     let bookmarksToFilter = currentFilter ? 
                         allBookmarks.filter(b => b.category === currentFilter) : 
                         allBookmarks;
-                    
-                    if (showFavorites) {
-                        bookmarksToFilter = bookmarksToFilter.filter(bookmark => 
-                            isFavorite(bookmark.title)
-                        );
-                    }
                     
                     const filteredBookmarks = bookmarksToFilter.filter(bookmark => {
                         return bookmark.title.toLowerCase().includes(searchTerm) || 
@@ -1325,6 +1516,7 @@
             renderBookmarks();
             setupSearch();
             setupQuickActions();
+            setupContactModal();
             setupScrollToTop();
             
             // Configurar enlaces del footer
@@ -1335,17 +1527,15 @@
             
             document.getElementById('suggestLink').addEventListener('click', (e) => {
                 e.preventDefault();
-                showToast('¡Próximamente podrás sugerir recursos!', 'success');
+                document.getElementById('contactModal').classList.add('active');
+                document.getElementById('subject').value = 'sugerencia';
             });
             
             document.getElementById('contactLink').addEventListener('click', (e) => {
                 e.preventDefault();
-                showToast('Contacto: info@youcore.com', 'success');
+                document.getElementById('contactModal').classList.add('active');
             });
         });
-
-        // Hacer funciones globales para los event listeners
-        window.toggleFavorite = toggleFavorite;
     </script>
 </body>
 </html>
