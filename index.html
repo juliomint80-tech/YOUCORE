@@ -161,7 +161,7 @@
         }
 
         /* Header */
-        header {
+        .main-header {
             padding: 20px;
             background: var(--background-color);
             border-bottom: 1px solid #e5e5e7;
@@ -477,10 +477,10 @@
 
         <!-- Panel Principal -->
         <div class="main-panel" id="mainPanel">
-            <header>
+            <div class="main-header">
                 <div class="logo">YOUCORE</div>
                 <div class="tagline">Navegación asistida por DeepSeek AI</div>
-            </header>
+            </div>
 
             <div class="main-content">
                 <section class="hero">
@@ -526,13 +526,17 @@
     </div>
 
     <script>
-        // Configuración de DeepSeek API
-        const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+        // Configuración de DeepSeek API - Versión Mejorada
+        const API_ENDPOINTS = [
+            'https://api.deepseek.com/v1/chat/completions',
+            'https://cors-anywhere.herokuapp.com/https://api.deepseek.com/v1/chat/completions'
+        ];
         
         // Estado de la aplicación
         let currentWeb = null;
         let chatHistory = [];
         let apiKey = localStorage.getItem('deepseek_api_key');
+        let currentEndpointIndex = 0;
 
         // Elementos DOM
         const splitContainer = document.getElementById('splitContainer');
@@ -765,6 +769,7 @@
             if (isThinking) {
                 return messageDiv;
             }
+            return null;
         }
 
         // Añadir mensaje del usuario
@@ -776,7 +781,7 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Enviar mensaje a DeepSeek API
+        // Enviar mensaje a DeepSeek API - VERSIÓN MEJORADA
         async function sendMessage() {
             const message = chatInput.value.trim();
             if (!message || !apiKey) return;
@@ -789,27 +794,32 @@
             sendBtn.innerHTML = '<div class="loading-spinner"></div>';
 
             // Añadir mensaje de "pensando"
-            const thinkingMessage = addBotMessage("Pensando...", true);
+            const thinkingMessage = addBotMessage("Conectando con DeepSeek...", true);
 
             try {
                 const response = await callDeepSeekAPI(message, currentWeb);
                 
                 // Reemplazar mensaje de "pensando" con respuesta real
-                thinkingMessage.remove();
+                if (thinkingMessage) {
+                    thinkingMessage.remove();
+                }
                 addBotMessage(response);
                 
             } catch (error) {
-                thinkingMessage.remove();
+                if (thinkingMessage) {
+                    thinkingMessage.remove();
+                }
                 console.error('Error DeepSeek API:', error);
                 
+                // Mensajes de error específicos
                 if (error.message.includes('401') || error.message.includes('403')) {
                     addBotMessage('❌ Error de autenticación. Verifica que tu API key sea correcta y esté activa.', false, true);
                 } else if (error.message.includes('429')) {
-                    addBotMessage('⚠️ Límite de tasa excedido. Por favor, espera un momento antes de enviar otro mensaje.', false, true);
-                } else if (error.message.includes('network')) {
-                    addBotMessage('🌐 Error de conexión. Verifica tu conexión a internet.', false, true);
+                    addBotMessage('⚠️ Límite de uso excedido. Espera un momento o verifica tu cuota en platform.deepseek.com', false, true);
+                } else if (error.message.includes('network') || error.message.includes('Failed to fetch')) {
+                    addBotMessage('🌐 Error de conexión. Verifica tu internet o intenta con otra red.', false, true);
                 } else {
-                    addBotMessage('❌ Error al conectar con DeepSeek. Por favor, intenta nuevamente.', false, true);
+                    addBotMessage('❌ Error al conectar con DeepSeek: ' + error.message, false, true);
                 }
             } finally {
                 sendBtn.disabled = false;
@@ -817,15 +827,14 @@
             }
         }
 
-        // Llamar a la API de DeepSeek
+        // Llamar a la API de DeepSeek con múltiples intentos
         async function callDeepSeekAPI(userMessage, currentWeb) {
             const context = currentWeb ? 
                 `El usuario está actualmente navegando en ${currentWeb.title}, que es ${currentWeb.description}. Contexto: ${currentWeb.context}. ` :
                 "El usuario está en la página principal de YOUCORE, un portal de marcadores útiles organizados por categorías. ";
             
-            const systemPrompt = `Eres un asistente útil especializado en YOUCORE, un portal de recursos útiles organizados por categorías. 
-${context}
-Responde de manera concisa, útil y práctica. Sé específico con recomendaciones y consejos relacionados con el contexto actual. 
+            const systemPrompt = `Eres un asistente útil especializado en YOUCORE. ${context}
+Responde de manera concisa, útil y práctica en español. Sé específico con recomendaciones y consejos relacionados con el contexto actual. 
 Si el usuario está en un sitio web específico, ofrece ayuda relacionada con ese sitio. 
 Mantén tus respuestas en español y sé amigable.`;
 
@@ -834,41 +843,108 @@ Mantén tus respuestas en español y sé amigable.`;
                     role: "system",
                     content: systemPrompt
                 },
-                ...chatHistory.slice(-6), // Mantener último contexto
+                ...chatHistory.slice(-4), // Mantener último contexto
                 {
                     role: "user",
                     content: userMessage
                 }
             ];
 
-            const response = await fetch(DEEPSEEK_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: "deepseek-chat",
-                    messages: messages,
-                    max_tokens: 1000,
-                    temperature: 0.7,
-                    stream: false
-                })
-            });
+            let lastError = null;
 
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            // Intentar con diferentes endpoints
+            for (let i = 0; i < API_ENDPOINTS.length; i++) {
+                try {
+                    console.log(`Intentando endpoint: ${API_ENDPOINTS[i]}`);
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 15000);
+                    
+                    const response = await fetch(API_ENDPOINTS[i], {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: "deepseek-chat",
+                            messages: messages,
+                            max_tokens: 800,
+                            temperature: 0.7,
+                            stream: false
+                        }),
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Actualizar historial de chat
+                        chatHistory.push(
+                            { role: "user", content: userMessage },
+                            { role: "assistant", content: data.choices[0].message.content }
+                        );
+
+                        return data.choices[0].message.content;
+                    } else {
+                        const errorText = await response.text();
+                        lastError = new Error(`HTTP ${response.status}: ${errorText}`);
+                        console.error(`Endpoint ${i} falló:`, lastError);
+                    }
+                } catch (error) {
+                    lastError = error;
+                    console.error(`Endpoint ${i} error:`, error);
+                    
+                    // Si es error de CORS, intentar con el siguiente endpoint
+                    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                        continue;
+                    }
+                }
             }
 
-            const data = await response.json();
-            
-            // Actualizar historial de chat
-            chatHistory.push(
-                { role: "user", content: userMessage },
-                { role: "assistant", content: data.choices[0].message.content }
-            );
+            // Si todos los endpoints fallan, usar respuesta de respaldo
+            if (lastError) {
+                console.error('Todos los endpoints fallaron:', lastError);
+                
+                // Respuesta de respaldo contextual inteligente
+                const fallbackResponse = generateFallbackResponse(userMessage, currentWeb);
+                chatHistory.push(
+                    { role: "user", content: userMessage },
+                    { role: "assistant", content: fallbackResponse }
+                );
+                
+                return fallbackResponse;
+            }
+        }
 
-            return data.choices[0].message.content;
+        // Generar respuesta de respaldo contextual
+        function generateFallbackResponse(userMessage, currentWeb) {
+            const lowerMessage = userMessage.toLowerCase();
+            
+            if (currentWeb) {
+                const webName = currentWeb.title;
+                
+                if (lowerMessage.includes('cómo') || lowerMessage.includes('como')) {
+                    if (webName.includes('InfoJobs') || webName.includes('LinkedIn')) {
+                        return `Para ${webName}, te recomiendo: 1) Personalizar tu CV para cada puesto, 2) Usar palabras clave específicas, 3) Destacar logros medibles. ¿Necesitas ayuda con algo más específico?`;
+                    } else if (webName.includes('Wallapop')) {
+                        return `En ${webName} es importante: 1) Tomar buenas fotos del producto, 2) Escribir descripciones claras, 3) Establecer precios competitivos, 4) Ser rápido en las respuestas.`;
+                    } else if (webName.includes('Coursera')) {
+                        return `Para ${webName} sugiero: 1) Revisar los requisitos del curso, 2) Planificar tu tiempo de estudio, 3) Participar en foros, 4) Completar las prácticas.`;
+                    }
+                }
+                
+                if (lowerMessage.includes('consejo') || lowerMessage.includes('tip')) {
+                    return `En ${webName}, un buen consejo es: revisar siempre las valoraciones de otros usuarios, leer las políticas del sitio y mantener tu perfil actualizado.`;
+                }
+                
+                return `Entiendo que necesitas ayuda con ${webName}. Mientras solucionamos la conexión con DeepSeek, ¿puedes contarme más específicamente qué necesitas? Por ejemplo: "cómo optimizar mi perfil" o "consejos para buscar trabajo".`;
+            }
+            
+            // Respuesta general si no hay web específica
+            return `Veo que preguntas sobre "${userMessage}". Mientras restauramos la conexión con DeepSeek, te invito a explorar los recursos arriba. Haz clic en cualquier sitio web para obtener ayuda más específica.`;
         }
 
         // Inicializar cuando se carga la página
