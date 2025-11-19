@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOUCORE - Portal de Recursos con Asistente IA</title>
+    <title>YOUCORE - Portal de Recursos Inteligente</title>
     <style>
         :root {
             --primary-color: #007AFF;
@@ -32,7 +32,6 @@
             padding: 0 20px;
         }
 
-        /* Header */
         header {
             padding: 20px 0;
             border-bottom: 1px solid #e5e5e7;
@@ -46,62 +45,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .tagline {
-            color: var(--text-secondary);
-            margin-top: 5px;
-        }
-
-        /* API Config */
-        .api-config {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .api-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 8px 16px;
-            cursor: pointer;
-        }
-
-        .api-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-        }
-
-        .api-modal.active {
-            display: flex;
-        }
-
-        .api-form {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-        }
-
-        .api-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-
-        /* Hero */
         .hero {
             text-align: center;
             padding: 60px 0 40px;
@@ -110,19 +53,8 @@
         .hero h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
 
-        .hero p {
-            font-size: 1.2em;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 30px;
-        }
-
-        /* Recursos */
         .resources-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -137,6 +69,8 @@
             padding: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
         }
 
         .resource-card:hover {
@@ -144,66 +78,17 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        .resource-icon {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        .resource-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .resource-description {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .resource-category {
-            display: inline-block;
-            background: #f5f5f7;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* Chat */
         .chat-section {
             background: #f5f5f7;
             border-radius: 20px;
             margin: 40px 0;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            padding: 20px;
-            background: white;
-            border-bottom: 1px solid #e5e5e7;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .api-status {
-            background: #FF3B30;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-        }
-
-        .api-status.connected {
-            background: #34C759;
+            padding: 30px;
         }
 
         .chat-messages {
-            height: 300px;
-            padding: 20px;
+            height: 200px;
             overflow-y: auto;
+            margin-bottom: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -229,12 +114,6 @@
             border: 1px solid #e5e5e7;
         }
 
-        .chat-input-container {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e5e5e7;
-        }
-
         .chat-input-wrapper {
             display: flex;
             gap: 10px;
@@ -256,317 +135,249 @@
             padding: 12px 20px;
             cursor: pointer;
         }
-
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
     </style>
 </head>
 <body>
-    <div class="api-config">
-        <button class="api-btn" onclick="openApiModal()">🔑 Configurar API</button>
-    </div>
-
-    <div class="api-modal" id="apiModal">
-        <div class="api-form">
-            <h3>Configurar DeepSeek API</h3>
-            <p>Consigue tu API key gratis en: <a href="https://platform.deepseek.com" target="_blank">DeepSeek Platform</a></p>
-            <input type="password" class="api-input" id="apiKey" placeholder="sk-tu-api-key-aqui">
-            <button class="send-btn" onclick="saveApiKey()" style="width:100%; margin-top:10px">Guardar API Key</button>
-            <p style="font-size:12px; margin-top:10px; color:#666">Tu clave se guarda localmente en tu navegador</p>
-        </div>
-    </div>
-
     <div class="container">
         <header>
             <div class="logo">YOUCORE</div>
-            <div class="tagline">Tu portal de recursos útiles con asistente IA</div>
+            <div style="color: var(--text-secondary);">Portal de recursos útiles</div>
         </header>
 
         <section class="hero">
-            <h1>Descubre Recursos Útiles</h1>
-            <p>Accede a sitios web organizados por categorías con asistencia inteligente de IA</p>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Descubre Recursos Útiles
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 1.2em; max-width: 600px; margin: 0 auto;">
+                Accede a sitios web organizados por categorías con asistencia inteligente
+            </p>
         </section>
 
-        <section class="resources-grid" id="resourcesGrid">
-            <!-- Los recursos se cargan aquí -->
+        <section class="resources-grid">
+            <a href="https://www.infojobs.net" target="_blank" class="resource-card">
+                <div style="font-size: 32px; margin-bottom: 15px;">💼</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">InfoJobs</div>
+                <div style="color: var(--text-secondary); margin-bottom: 15px;">Portal de empleo líder en España</div>
+                <div style="background: #f5f5f7; padding: 4px 8px; border-radius: 8px; font-size: 12px; display: inline-block;">Empleo</div>
+            </a>
+
+            <a href="https://www.linkedin.com/jobs" target="_blank" class="resource-card">
+                <div style="font-size: 32px; margin-bottom: 15px;">💼</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">LinkedIn Jobs</div>
+                <div style="color: var(--text-secondary); margin-bottom: 15px;">Ofertas internacionales y networking</div>
+                <div style="background: #f5f5f7; padding: 4px 8px; border-radius: 8px; font-size: 12px; display: inline-block;">Empleo</div>
+            </a>
+
+            <a href="https://www.coursera.org" target="_blank" class="resource-card">
+                <div style="font-size: 32px; margin-bottom: 15px;">📚</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Coursera</div>
+                <div style="color: var(--text-secondary); margin-bottom: 15px;">Cursos de universidades top</div>
+                <div style="background: #f5f5f7; padding: 4px 8px; border-radius: 8px; font-size: 12px; display: inline-block;">Educación</div>
+            </a>
+
+            <a href="https://www.wallapop.com" target="_blank" class="resource-card">
+                <div style="font-size: 32px; margin-bottom: 15px;">🔄</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Wallapop</div>
+                <div style="color: var(--text-secondary); margin-bottom: 15px;">Compra y venta segunda mano</div>
+                <div style="background: #f5f5f7; padding: 4px 8px; border-radius: 8px; font-size: 12px; display: inline-block;">Segunda Mano</div>
+            </a>
+
+            <a href="https://github.com" target="_blank" class="resource-card">
+                <div style="font-size: 32px; margin-bottom: 15px;">💻</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">GitHub</div>
+                <div style="color: var(--text-secondary); margin-bottom: 15px;">Desarrollo colaborativo</div>
+                <div style="background: #f5f5f7; padding: 4px 8px; border-radius: 8px; font-size: 12px; display: inline-block;">Tecnología</div>
+            </a>
+
+            <a href="https://www.duolingo.com" target="_blank" class="resource-card">
+                <div style="font-size: 32px; margin-bottom: 15px;">🦉</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Duolingo</div>
+                <div style="color: var(--text-secondary); margin-bottom: 15px;">Aprende idiomas gratis</div>
+                <div style="background: #f5f5f7; padding: 4px 8px; border-radius: 8px; font-size: 12px; display: inline-block;">Educación</div>
+            </a>
         </section>
 
         <section class="chat-section">
-            <div class="chat-header">
-                <h3>Asistente YOUCORE 🤖</h3>
-                <div class="api-status" id="apiStatus">API No Configurada</div>
-            </div>
+            <h3 style="margin-bottom: 20px;">Asistente YOUCORE 🤖</h3>
             <div class="chat-messages" id="chatMessages">
                 <div class="message bot">
-                    ¡Hola! Configura tu API key de DeepSeek para comenzar. Luego haz clic en cualquier recurso y te ayudaré con lo que necesites.
+                    ¡Hola! Soy tu asistente de YOUCORE. Haz clic en cualquier recurso para abrirlo y pregúntame lo que necesites sobre ese sitio web.
                 </div>
             </div>
-            <div class="chat-input-container">
-                <div class="chat-input-wrapper">
-                    <textarea class="chat-input" id="chatInput" placeholder="Configura la API key primero..." disabled></textarea>
-                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>Enviar</button>
-                </div>
+            <div class="chat-input-wrapper">
+                <textarea class="chat-input" id="chatInput" placeholder="Escribe tu pregunta sobre algún recurso..." rows="2"></textarea>
+                <button class="send-btn" onclick="sendMessage()">Enviar</button>
             </div>
         </section>
     </div>
 
     <script>
-        // Datos de recursos
-        const resources = [
-            {
-                title: "InfoJobs",
-                description: "Portal de empleo líder en España con miles de ofertas actualizadas",
-                url: "https://www.infojobs.net",
-                category: "Empleo",
-                icon: "💼",
-                color: "#007AFF",
-                context: "empleo, trabajo, CV, entrevistas, búsqueda laboral"
+        // Base de conocimiento de recursos
+        const resourcesKnowledge = {
+            'infojobs': {
+                name: 'InfoJobs',
+                tips: [
+                    '💡 Crea alertas de empleo personalizadas por keywords',
+                    '📝 Optimiza tu CV para cada puesto específico',
+                    '🔍 Usa filtros avanzados por ubicación y salario',
+                    '⭐ Marca favoritos para seguir ofertas interesantes'
+                ],
+                context: 'portal de empleo, búsqueda de trabajo, CV, entrevistas'
             },
-            {
-                title: "LinkedIn Jobs", 
-                description: "Plataforma profesional con ofertas internacionales y networking",
-                url: "https://www.linkedin.com/jobs",
-                category: "Empleo",
-                icon: "💼", 
-                color: "#0077B5",
-                context: "networking, perfil profesional, reclutamiento"
+            'linkedin': {
+                name: 'LinkedIn',
+                tips: [
+                    '👥 Conecta con reclutadores de tu industria',
+                    '📊 Optimiza tu perfil con palabras clave',
+                    '🎯 Sigue empresas que te interesen',
+                    '💬 Participa en grupos profesionales'
+                ],
+                context: 'networking profesional, empleo, contactos, marca personal'
             },
-            {
-                title: "Coursera",
-                description: "Cursos online de universidades de prestigio mundial",
-                url: "https://www.coursera.org",
-                category: "Educación",
-                icon: "📚",
-                color: "#5856D6",
-                context: "cursos online, certificaciones, aprendizaje"
+            'coursera': {
+                name: 'Coursera', 
+                tips: [
+                    '🎓 Aplica para ayuda financiera si necesitas',
+                    '📅 Crea un horario de estudio consistente',
+                    '💬 Participa en foros de discusión',
+                    '📋 Completa las tareas prácticas'
+                ],
+                context: 'cursos online, certificaciones, aprendizaje, educación'
             },
-            {
-                title: "Wallapop",
-                description: "Plataforma para comprar y vender productos de segunda mano",
-                url: "https://www.wallapop.com",
-                category: "Segunda Mano", 
-                icon: "🔄",
-                color: "#FF9500",
-                context: "comprar, vender, segunda mano, productos usados"
+            'wallapop': {
+                name: 'Wallapop',
+                tips: [
+                    '📸 Toma fotos claras y con buena luz',
+                    '📝 Escribe descripciones detalladas',
+                    '💰 Investiga precios de productos similares',
+                    '🔒 Revisa perfiles de compradores/vendedores'
+                ],
+                context: 'comprar, vender, segunda mano, productos usados'
             },
-            {
-                title: "GitHub",
-                description: "Plataforma de desarrollo colaborativo para programadores",
-                url: "https://github.com",
-                category: "Tecnología",
-                icon: "💻",
-                color: "#181717", 
-                context: "programación, código, repositorios, desarrollo"
+            'github': {
+                name: 'GitHub',
+                tips: [
+                    '🐙 Crea un README claro para tus proyectos',
+                    '🔀 Usa branches para nuevas funcionalidades',
+                    '📖 Explora proyectos open source interesantes',
+                    '🤝 Contribuye a proyectos de la comunidad'
+                ],
+                context: 'programación, código, repositorios, desarrollo software'
             },
-            {
-                title: "Duolingo",
-                description: "Aplicación para aprender idiomas de forma divertida",
-                url: "https://www.duolingo.com",
-                category: "Educación",
-                icon: "🦉",
-                color: "#58CC02",
-                context: "idiomas, aprendizaje, inglés, francés, alemán"
+            'duolingo': {
+                name: 'Duolingo',
+                tips: [
+                    '📱 Practica todos los días aunque sea poco',
+                    '🎯 Activa notificaciones para recordatorios',
+                    '💬 Completa las lecciones de speaking',
+                    '🏆 Participa en ligas para motivación extra'
+                ],
+                context: 'aprender idiomas, inglés, francés, alemán, práctica'
             }
-        ];
+        };
 
-        // Estado
-        let apiKey = localStorage.getItem('deepseek_api_key');
         let currentResource = null;
-        let chatHistory = [];
 
-        // Elementos DOM
-        const apiStatus = document.getElementById('apiStatus');
-        const chatInput = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const chatMessages = document.getElementById('chatMessages');
-        const resourcesGrid = document.getElementById('resourcesGrid');
-
-        // Inicializar
-        function init() {
-            renderResources();
-            checkApiStatus();
-        }
-
-        // Renderizar recursos
-        function renderResources() {
-            resourcesGrid.innerHTML = '';
+        // Detectar recurso del mensaje
+        function detectResource(message) {
+            const lowerMessage = message.toLowerCase();
             
-            resources.forEach(resource => {
-                const card = document.createElement('div');
-                card.className = 'resource-card';
-                card.innerHTML = `
-                    <div class="resource-icon" style="color: ${resource.color}">${resource.icon}</div>
-                    <div class="resource-title">${resource.title}</div>
-                    <div class="resource-description">${resource.description}</div>
-                    <div class="resource-category">${resource.category}</div>
-                `;
-                
-                card.addEventListener('click', () => {
-                    selectResource(resource);
-                });
-                
-                resourcesGrid.appendChild(card);
-            });
-        }
-
-        // Seleccionar recurso
-        function selectResource(resource) {
-            if (!apiKey) {
-                addBotMessage('⚠️ Primero configura tu API key de DeepSeek');
-                return;
-            }
-
-            currentResource = resource;
-            
-            // Abrir en nueva pestaña
-            window.open(resource.url, '_blank');
-            
-            // Mensaje contextual
-            addBotMessage(`Perfecto! Has seleccionado **${resource.title}**. ¿En qué puedo ayudarte relacionado con ${resource.context}?`);
-        }
-
-        // Verificar estado API
-        function checkApiStatus() {
-            if (apiKey) {
-                apiStatus.textContent = '✅ API Conectada';
-                apiStatus.className = 'api-status connected';
-                chatInput.placeholder = 'Escribe tu pregunta...';
-                chatInput.disabled = false;
-                sendBtn.disabled = false;
-                
-                if (chatMessages.children.length === 1) {
-                    addBotMessage('¡Perfecto! Ahora haz clic en cualquier recurso y te ayudaré con lo que necesites.');
+            for (const [key, resource] of Object.entries(resourcesKnowledge)) {
+                if (lowerMessage.includes(key) || lowerMessage.includes(resource.name.toLowerCase())) {
+                    return resource;
                 }
             }
-        }
-
-        // Modal API
-        function openApiModal() {
-            document.getElementById('apiModal').classList.add('active');
-        }
-
-        function saveApiKey() {
-            const key = document.getElementById('apiKey').value.trim();
-            if (!key) {
-                alert('Por favor ingresa una API key');
-                return;
+            
+            // Detección por palabras clave
+            if (lowerMessage.includes('trabajo') || lowerMessage.includes('empleo') || lowerMessage.includes('curriculum') || lowerMessage.includes('cv')) {
+                return resourcesKnowledge.infojobs;
+            }
+            if (lowerMessage.includes('curso') || lowerMessage.includes('aprender') || lowerMessage.includes('estudiar')) {
+                return resourcesKnowledge.coursera;
+            }
+            if (lowerMessage.includes('comprar') || lowerMessage.includes('vender') || lowerMessage.includes('segunda mano')) {
+                return resourcesKnowledge.wallapop;
+            }
+            if (lowerMessage.includes('program') || lowerMessage.includes('código') || lowerMessage.includes('github')) {
+                return resourcesKnowledge.github;
+            }
+            if (lowerMessage.includes('idioma') || lowerMessage.includes('inglés') || lowerMessage.includes('francés')) {
+                return resourcesKnowledge.duolingo;
             }
             
-            if (!key.startsWith('sk-')) {
-                alert('La API key debe comenzar con "sk-"');
-                return;
-            }
-
-            apiKey = key;
-            localStorage.setItem('deepseek_api_key', key);
-            document.getElementById('apiModal').classList.remove('active');
-            checkApiStatus();
+            return null;
         }
 
-        // Mensajes
-        function addBotMessage(text) {
-            const div = document.createElement('div');
-            div.className = 'message bot';
-            div.textContent = text;
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+        // Generar respuesta inteligente
+        function generateResponse(userMessage) {
+            const resource = detectResource(userMessage);
+            const lowerMessage = userMessage.toLowerCase();
 
-        function addUserMessage(text) {
-            const div = document.createElement('div');
-            div.className = 'message user';
-            div.textContent = text;
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Enviar mensaje
-        async function sendMessage() {
-            const message = chatInput.value.trim();
-            if (!message || !apiKey) return;
-
-            addUserMessage(message);
-            chatInput.value = '';
-            sendBtn.disabled = true;
-            sendBtn.textContent = '...';
-
-            const thinking = addBotMessage('Pensando...');
-
-            try {
-                const response = await callDeepSeekAPI(message);
+            if (resource) {
+                currentResource = resource;
                 
-                thinking.remove();
-                addBotMessage(response);
+                if (lowerMessage.includes('consejo') || lowerMessage.includes('tip') || lowerMessage.includes('ayuda')) {
+                    const randomTip = resource.tips[Math.floor(Math.random() * resource.tips.length)];
+                    return `Para ${resource.name}: ${randomTip}\n\n¿Necesitas más ayuda específica sobre ${resource.context}?`;
+                }
                 
-            } catch (error) {
-                thinking.remove();
-                addBotMessage('Error de conexión. Verifica tu API key.');
-            } finally {
-                sendBtn.disabled = false;
-                sendBtn.textContent = 'Enviar';
-            }
-        }
-
-        // Llamar a DeepSeek API
-        async function callDeepSeekAPI(userMessage) {
-            const context = currentResource ? 
-                `El usuario está interesado en ${currentResource.title} (${currentResource.context}). ` :
-                "El usuario está explorando YOUCORE, un portal de recursos útiles. ";
-            
-            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: "deepseek-chat",
-                    messages: [
-                        {
-                            role: "system",
-                            content: `Eres un asistente especializado en YOUCORE. ${context}Responde de manera útil y práctica en español.`
-                        },
-                        ...chatHistory.slice(-4),
-                        { role: "user", content: userMessage }
-                    ],
-                    max_tokens: 500,
-                    temperature: 0.7
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error('API error');
+                if (lowerMessage.includes('cómo') || lowerMessage.includes('como')) {
+                    return `En ${resource.name}, te recomiendo:\n${resource.tips.slice(0, 2).join('\n')}\n\n¿Qué aspecto específico de ${resource.context} te interesa?`;
+                }
+                
+                return `Veo que preguntas sobre ${resource.name}. ${resource.tips[0]}\n\nPuedo darte más consejos sobre: ${resource.context}`;
             }
 
-            const data = await response.json();
-            const reply = data.choices[0].message.content;
-            
-            chatHistory.push(
-                { role: "user", content: userMessage },
-                { role: "assistant", content: reply }
-            );
+            // Respuestas generales
+            const generalResponses = [
+                "¡Hola! Soy tu asistente de YOUCORE. Haz clic en cualquier recurso arriba y pregúntame sobre ese sitio específico.",
+                "Puedo ayudarte con consejos sobre: empleo (InfoJobs, LinkedIn), educación (Coursera, Duolingo), tecnología (GitHub) o segunda mano (Wallapop). ¿Qué te interesa?",
+                "Para darte la mejor ayuda, dime sobre qué recurso quieres información: ¿empleo, cursos, compra-venta, o programación?",
+                "¿Necesitas ayuda con algún sitio específico? Tengo información sobre InfoJobs, Coursera, Wallapop, GitHub, Duolingo y más."
+            ];
 
-            return reply;
+            return generalResponses[Math.floor(Math.random() * generalResponses.length)];
         }
 
-        // Event listeners
-        chatInput.addEventListener('keypress', (e) => {
+        // Manejar mensajes
+        function addMessage(text, isUser = false) {
+            const messages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            messageDiv.textContent = text;
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            addMessage(message, true);
+            input.value = '';
+
+            // Simular "pensando"
+            setTimeout(() => {
+                const response = generateResponse(message);
+                addMessage(response, false);
+            }, 1000);
+        }
+
+        // Enter para enviar
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
 
-        document.getElementById('apiModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('apiModal')) {
-                document.getElementById('apiModal').classList.remove('active');
-            }
+        // Auto-ajustar altura del textarea
+        document.getElementById('chatInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
         });
-
-        // Iniciar
-        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
