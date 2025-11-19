@@ -3,26 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOUCORE - Portal de Marcadores Útiles | Recursos Gratuitos 2024</title>
-    <meta name="description" content="Descubre los mejores recursos útiles y entretenidos organizados por categorías. Accede gratis a sitios web, aplicaciones y herramientas sin registro.">
-    <meta name="keywords" content="marcadores útiles, recursos web, herramientas online, aplicaciones gratuitas, sitios recomendados, enlaces importantes">
-    <meta name="author" content="YOUCORE">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="YOUCORE - Tu Portal Centralizado de Marcadores Útiles">
-    <meta property="og:description" content="Descubre recursos útiles organizados por categorías. Totalmente gratuito y sin registro.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://youcore.com">
-    <meta property="og:image" content="https://youcore.com/og-image.jpg">
-    <meta property="og:site_name" content="YOUCORE">
-    
-    <!-- Preconnects para mejorar velocidad -->
-    <link rel="preconnect" href="https://logo.clearbit.com">
-    <link rel="dns-prefetch" href="https://logo.clearbit.com">
-    
+    <title>YOUCORE - Portal de Marcadores Útiles</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔖</text></svg>">
-    
     <style>
         :root {
             --primary-color: #007AFF;
@@ -1880,4 +1862,40 @@
             renderBookmarks();
             setupSearch();
             setupQuickActions();
-            setupContactM
+            setupContactModal();
+            setupDonationModal();
+            setupScrollToTop();
+            
+            // Añadir botón para mostrar todas las categorías
+            const categoriesSection = document.querySelector('.categories-section');
+            const showAllButton = document.createElement('div');
+            showAllButton.className = 'show-all-categories';
+            showAllButton.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <span>📋</span>
+                    <span>Mostrar todas las categorías</span>
+                </div>
+            `;
+            showAllButton.addEventListener('click', showAllCategories);
+            categoriesSection.appendChild(showAllButton);
+            
+            // Configurar enlaces del footer
+            document.getElementById('aboutLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                showToast('YOUCORE - Plataforma de descubrimiento de recursos útiles', 'success');
+            });
+            
+            document.getElementById('suggestLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('contactModal').classList.add('active');
+                document.getElementById('subject').value = 'sugerencia';
+            });
+            
+            document.getElementById('contactLink').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('contactModal').classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
