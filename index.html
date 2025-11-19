@@ -3,110 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOUCORE - Navegación Asistida por DeepSeek AI</title>
-    <meta name="description" content="Descubre recursos útiles con asistencia de IA en tiempo real">
+    <title>YOUCORE - Navegación Asistida por IA</title>
     <style>
         :root {
             --primary-color: #007AFF;
             --secondary-color: #5856D6;
-            --accent-color: #FF2D55;
             --background-color: #FFFFFF;
             --text-primary: #1D1D1F;
             --text-secondary: #86868B;
-            --border-radius: 12px;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background-color: var(--background-color);
+            background: white;
             color: var(--text-primary);
+            height: 100vh;
             overflow: hidden;
         }
 
-        /* Configuración API */
-        .api-config {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .api-toggle {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            padding: 8px 16px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .api-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1001;
-        }
-
-        .api-modal.active {
-            display: flex;
-        }
-
-        .api-form {
-            background: white;
-            padding: 30px;
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 500px;
-            box-shadow: var(--shadow);
-        }
-
-        .api-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-family: monospace;
-        }
-
-        .api-save {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Split Container */
-        .split-container {
+        .container {
             display: flex;
             height: 100vh;
-            transition: all 0.3s ease;
         }
 
-        /* Panel Web (70%) */
+        /* Panel Web */
         .web-panel {
             flex: 7;
             display: none;
             flex-direction: column;
             border-right: 1px solid #e5e5e7;
-            background: white;
         }
 
         .web-panel.active {
@@ -115,7 +46,7 @@
 
         .web-header {
             padding: 15px 20px;
-            background: var(--background-color);
+            background: white;
             border-bottom: 1px solid #e5e5e7;
             display: flex;
             align-items: center;
@@ -129,17 +60,6 @@
             border-radius: 20px;
             padding: 8px 16px;
             cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .close-web:hover {
-            background: var(--secondary-color);
-        }
-
-        .web-title {
-            font-weight: 600;
-            font-size: 16px;
         }
 
         .web-view {
@@ -148,22 +68,20 @@
             width: 100%;
         }
 
-        /* Panel Principal (100% cuando no hay web) */
+        /* Panel Principal */
         .main-panel {
             flex: 10;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
         }
 
-        .split-container.has-web .main-panel {
+        .container.has-web .main-panel {
             flex: 3;
         }
 
-        /* Header */
         .main-header {
             padding: 20px;
-            background: var(--background-color);
+            background: white;
             border-bottom: 1px solid #e5e5e7;
         }
 
@@ -175,62 +93,26 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .tagline {
-            color: var(--text-secondary);
-            font-size: 16px;
-            margin-top: 5px;
-        }
-
-        /* Chatbot Panel */
-        .chatbot-panel {
+        /* Chat */
+        .chat-panel {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: var(--background-color);
         }
 
         .chat-header {
             padding: 20px;
-            background: var(--background-color);
-            border-bottom: 1px solid #e5e5e7;
             text-align: center;
-            position: relative;
-        }
-
-        .chat-header h3 {
-            color: var(--text-primary);
-            font-size: 18px;
-        }
-
-        .api-status {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            background: #f5f5f7;
-        }
-
-        .api-status.connected {
-            background: #34C75920;
-            color: #34C759;
-        }
-
-        .api-status.disconnected {
-            background: #FF3B3020;
-            color: #FF3B30;
+            border-bottom: 1px solid #e5e5e7;
         }
 
         .chat-messages {
             flex: 1;
-            overflow-y: auto;
             padding: 20px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-height: 60vh;
         }
 
         .message {
@@ -238,52 +120,28 @@
             padding: 12px 16px;
             border-radius: 18px;
             line-height: 1.4;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .message.user {
             align-self: flex-end;
             background: var(--primary-color);
             color: white;
-            border-bottom-right-radius: 6px;
         }
 
         .message.bot {
             align-self: flex-start;
             background: #f5f5f7;
             color: var(--text-primary);
-            border-bottom-left-radius: 6px;
-        }
-
-        .message.thinking {
-            align-self: flex-start;
-            background: #f5f5f7;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        .message.error {
-            align-self: flex-start;
-            background: #FF3B3020;
-            color: #FF3B30;
-            border: 1px solid #FF3B30;
         }
 
         .chat-input-container {
             padding: 20px;
             border-top: 1px solid #e5e5e7;
-            background: var(--background-color);
         }
 
         .chat-input-wrapper {
             display: flex;
             gap: 10px;
-            align-items: flex-end;
         }
 
         .chat-input {
@@ -292,15 +150,6 @@
             border: 1px solid #e5e5e7;
             border-radius: 20px;
             resize: none;
-            font-size: 14px;
-            line-height: 1.4;
-            max-height: 120px;
-            background: #f5f5f7;
-        }
-
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
         }
 
         .send-btn {
@@ -310,98 +159,73 @@
             border-radius: 20px;
             padding: 12px 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .send-btn:hover:not(:disabled) {
-            background: var(--secondary-color);
+        /* Configuración API */
+        .api-config {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
         }
 
-        .send-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .api-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
         }
 
-        /* Main Content */
+        .api-modal.active {
+            display: flex;
+        }
+
+        .api-form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .api-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        /* Contenido Principal */
         .main-content {
             flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .hero {
-            text-align: center;
             padding: 40px 20px;
+            text-align: center;
         }
 
         .hero h1 {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 15px;
+            font-size: 2.5em;
+            margin-bottom: 20px;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            font-size: 18px;
+            font-size: 1.2em;
             color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
+            margin-bottom: 30px;
         }
 
-        /* Categories Grid */
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .category-card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid #e5e5e7;
-        }
-
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .category-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-
-        .category-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .category-description {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        /* URL Input */
         .url-input-container {
             max-width: 600px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 0 auto 40px;
         }
 
         .url-input-wrapper {
@@ -414,12 +238,6 @@
             padding: 12px 16px;
             border: 1px solid #e5e5e7;
             border-radius: 20px;
-            font-size: 14px;
-        }
-
-        .url-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
         }
 
         .go-btn {
@@ -431,186 +249,129 @@
             cursor: pointer;
         }
 
-        /* Quick Sites */
         .quick-sites {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 15px;
-            margin-top: 20px;
-            padding: 0 20px;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .quick-site {
             background: white;
-            border-radius: var(--border-radius);
-            padding: 15px;
+            border: 1px solid #e5e5e7;
+            border-radius: 12px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid #e5e5e7;
+            transition: transform 0.2s;
         }
 
         .quick-site:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow);
+            transform: translateY(-2px);
         }
 
-        .quick-site-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .quick-site-name {
+        .api-status {
+            background: #FF3B30;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
             font-size: 12px;
-            font-weight: 600;
         }
 
-        /* Loading Spinner */
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .split-container {
-                flex-direction: column;
-            }
-            
-            .web-panel {
-                height: 50vh;
-            }
-            
-            .split-container.has-web .main-panel {
-                height: 50vh;
-            }
-            
-            .categories-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero h1 {
-                font-size: 28px;
-            }
-            
-            .api-config {
-                position: static;
-                text-align: center;
-                margin-bottom: 10px;
-            }
-            
-            .quick-sites {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
+        .api-status.connected {
+            background: #34C759;
         }
     </style>
 </head>
 <body>
-    <!-- Configuración API -->
     <div class="api-config">
-        <button class="api-toggle" id="apiToggle">🔑 Configurar API</button>
+        <button class="close-web" onclick="openApiModal()">🔑 Configurar API</button>
     </div>
 
     <div class="api-modal" id="apiModal">
         <div class="api-form">
-            <h3>Configuración DeepSeek API</h3>
-            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 15px;">
-                Obtén tu API key gratuita en: 
-                <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com</a>
-            </p>
-            <input type="password" class="api-input" id="apiKey" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
-            <button class="api-save" id="apiSave">Guardar API Key</button>
-            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 10px;">
-                Tu API key se guarda localmente y nunca se envía a nuestros servidores.
-            </p>
+            <h3>Configurar API Key</h3>
+            <p>Consigue tu API key gratis en: <a href="https://platform.deepseek.com" target="_blank">DeepSeek Platform</a></p>
+            <input type="password" class="api-input" id="apiKey" placeholder="sk-tu-api-key-aqui">
+            <button class="send-btn" onclick="saveApiKey()" style="width:100%">Guardar API Key</button>
+            <p style="font-size:12px; margin-top:10px; color:#666">Tu clave se guarda localmente en tu navegador</p>
         </div>
     </div>
 
-    <!-- Split Container -->
-    <div class="split-container" id="splitContainer">
+    <div class="container" id="container">
         <!-- Panel Web -->
         <div class="web-panel" id="webPanel">
             <div class="web-header">
-                <button class="close-web" id="closeWeb">← Volver a YOUCORE</button>
-                <span class="web-title" id="webTitle">Cargando...</span>
+                <button class="close-web" onclick="closeWebView()">← Volver</button>
+                <span id="webTitle">Navegando...</span>
             </div>
-            <iframe class="web-view" id="webView" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+            <iframe class="web-view" id="webView" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
         </div>
 
         <!-- Panel Principal -->
         <div class="main-panel" id="mainPanel">
             <div class="main-header">
                 <div class="logo">YOUCORE</div>
-                <div class="tagline">Navegación asistida por DeepSeek AI</div>
+                <div style="color: var(--text-secondary);">Navegación asistida por IA</div>
             </div>
 
             <div class="main-content">
-                <section class="hero">
-                    <h1>Navega por TODA la web con asistencia de IA</h1>
-                    <p>Visita cualquier sitio web y recibe ayuda inteligente de DeepSeek en tiempo real</p>
-                </section>
+                <div class="hero">
+                    <h1>Navega por TODA la web con IA</h1>
+                    <p>Visita cualquier sitio y recibe ayuda inteligente en tiempo real</p>
+                </div>
 
-                <!-- Navegación Universal -->
-                <section class="url-input-container">
+                <div class="url-input-container">
                     <div class="url-input-wrapper">
-                        <input type="url" class="url-input" id="urlInput" placeholder="https://ejemplo.com" />
-                        <button class="go-btn" id="goBtn">Ir</button>
+                        <input type="url" class="url-input" id="urlInput" placeholder="https://ejemplo.com">
+                        <button class="go-btn" onclick="goToSite()">Ir al Sitio</button>
                     </div>
-                </section>
+                </div>
 
-                <!-- Sitios Rápidos -->
-                <section style="margin-top: 40px;">
-                    <h2 style="text-align: center; margin-bottom: 20px; font-size: 24px;">Sitios Populares</h2>
-                    <div class="quick-sites" id="quickSites">
-                        <!-- Los sitios rápidos se cargan dinámicamente -->
+                <div class="quick-sites">
+                    <div class="quick-site" onclick="goToQuickSite('https://www.google.com', 'Google')">
+                        <div style="font-size:24px; margin-bottom:8px">🔍</div>
+                        <div>Google</div>
                     </div>
-                </section>
-
-                <!-- Categorías YOUCORE -->
-                <section style="margin-top: 60px;">
-                    <h2 style="text-align: center; margin-bottom: 20px; font-size: 24px;">Recursos YOUCORE</h2>
-                    <div class="categories-grid" id="resourcesGrid">
-                        <!-- Los recursos se cargan dinámicamente -->
+                    <div class="quick-site" onclick="goToQuickSite('https://www.youtube.com', 'YouTube')">
+                        <div style="font-size:24px; margin-bottom:8px">📺</div>
+                        <div>YouTube</div>
                     </div>
-                </section>
+                    <div class="quick-site" onclick="goToQuickSite('https://es.wikipedia.org', 'Wikipedia')">
+                        <div style="font-size:24px; margin-bottom:8px">📚</div>
+                        <div>Wikipedia</div>
+                    </div>
+                    <div class="quick-site" onclick="goToQuickSite('https://www.github.com', 'GitHub')">
+                        <div style="font-size:24px; margin-bottom:8px">💻</div>
+                        <div>GitHub</div>
+                    </div>
+                    <div class="quick-site" onclick="goToQuickSite('https://www.twitter.com', 'Twitter')">
+                        <div style="font-size:24px; margin-bottom:8px">🐦</div>
+                        <div>Twitter</div>
+                    </div>
+                    <div class="quick-site" onclick="goToQuickSite('https://www.reddit.com', 'Reddit')">
+                        <div style="font-size:24px; margin-bottom:8px">👥</div>
+                        <div>Reddit</div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Panel del Chatbot -->
-            <div class="chatbot-panel">
+            <!-- Chat -->
+            <div class="chat-panel">
                 <div class="chat-header">
                     <h3>Asistente YOUCORE 🤖</h3>
-                    <div class="api-status disconnected" id="apiStatus">API No Configurada</div>
+                    <div class="api-status" id="apiStatus">API No Configurada</div>
                 </div>
                 <div class="chat-messages" id="chatMessages">
                     <div class="message bot">
-                        ¡Hola! Soy tu asistente de YOUCORE. Para comenzar, configura tu API key de DeepSeek. Luego visita cualquier sitio web y te ayudaré con lo que necesites.
+                        ¡Hola! Configura tu API key de DeepSeek para comenzar. Luego visita cualquier sitio web.
                     </div>
                 </div>
                 <div class="chat-input-container">
                     <div class="chat-input-wrapper">
-                        <textarea 
-                            class="chat-input" 
-                            id="chatInput" 
-                            placeholder="Configura la API key primero..." 
-                            rows="1"
-                            disabled
-                        ></textarea>
-                        <button class="send-btn" id="sendBtn" disabled>
-                            <span>Enviar</span>
-                        </button>
+                        <textarea class="chat-input" id="chatInput" placeholder="Configura la API key primero..." disabled></textarea>
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>Enviar</button>
                     </div>
                 </div>
             </div>
@@ -618,434 +379,170 @@
     </div>
 
     <script>
-        // Configuración de DeepSeek API
-        const API_ENDPOINTS = [
-            'https://api.deepseek.com/v1/chat/completions',
-            'https://cors-anywhere.herokuapp.com/https://api.deepseek.com/v1/chat/completions'
-        ];
-
-        // Estado de la aplicación
-        let currentWeb = null;
-        let chatHistory = [];
+        // Estado simple
         let apiKey = localStorage.getItem('deepseek_api_key');
-        let currentEndpointIndex = 0;
+        let currentSite = null;
 
         // Elementos DOM
-        const splitContainer = document.getElementById('splitContainer');
-        const webPanel = document.getElementById('webPanel');
-        const mainPanel = document.getElementById('mainPanel');
-        const webView = document.getElementById('webView');
-        const webTitle = document.getElementById('webTitle');
-        const closeWeb = document.getElementById('closeWeb');
-        const resourcesGrid = document.getElementById('resourcesGrid');
-        const quickSites = document.getElementById('quickSites');
-        const chatMessages = document.getElementById('chatMessages');
+        const apiStatus = document.getElementById('apiStatus');
         const chatInput = document.getElementById('chatInput');
         const sendBtn = document.getElementById('sendBtn');
-        const apiToggle = document.getElementById('apiToggle');
-        const apiModal = document.getElementById('apiModal');
-        const apiKeyInput = document.getElementById('apiKey');
-        const apiSave = document.getElementById('apiSave');
-        const apiStatus = document.getElementById('apiStatus');
-        const urlInput = document.getElementById('urlInput');
-        const goBtn = document.getElementById('goBtn');
+        const chatMessages = document.getElementById('chatMessages');
 
-        // Sitios populares para acceso rápido
-        const popularSites = [
-            { name: "Google", url: "https://www.google.com", icon: "🔍" },
-            { name: "YouTube", url: "https://www.youtube.com", icon: "📺" },
-            { name: "Wikipedia", url: "https://es.wikipedia.org", icon: "📚" },
-            { name: "GitHub", url: "https://github.com", icon: "💻" },
-            { name: "Twitter", url: "https://twitter.com", icon: "🐦" },
-            { name: "Reddit", url: "https://www.reddit.com", icon: "👥" },
-            { name: "Amazon", url: "https://www.amazon.com", icon: "📦" },
-            { name: "Netflix", url: "https://www.netflix.com", icon: "🎬" },
-            { name: "Spotify", url: "https://www.spotify.com", icon: "🎵" },
-            { name: "Instagram", url: "https://www.instagram.com", icon: "📸" },
-            { name: "LinkedIn", url: "https://www.linkedin.com", icon: "💼" },
-            { name: "WhatsApp", url: "https://web.whatsapp.com", icon: "💬" }
-        ];
-
-        // Recursos YOUCORE
-        const youcoreResources = [
-            {
-                title: "InfoJobs",
-                description: "Portal de empleo líder en España",
-                url: "https://www.infojobs.net",
-                category: "Empleo",
-                icon: "💼",
-                color: "#007AFF",
-                context: "empleo, trabajo, CV, entrevistas, búsqueda laboral"
-            },
-            {
-                title: "Coursera",
-                description: "Cursos online de universidades top",
-                url: "https://www.coursera.org",
-                category: "Educación",
-                icon: "📚",
-                color: "#5856D6",
-                context: "cursos online, certificaciones, aprendizaje"
-            },
-            {
-                title: "Wallapop",
-                description: "Compra y venta de segunda mano",
-                url: "https://www.wallapop.com",
-                category: "Segunda Mano",
-                icon: "🔄",
-                color: "#FF9500",
-                context: "comprar, vender, segunda mano, productos usados"
-            },
-            {
-                title: "Tripadvisor",
-                description: "Reseñas de viajes y restaurantes",
-                url: "https://www.tripadvisor.com",
-                category: "Viajes",
-                icon: "✈️",
-                color: "#34C759",
-                context: "viajes, hoteles, restaurantes, turismo"
-            }
-        ];
-
-        // Inicializar la aplicación
+        // Inicializar
         function init() {
-            renderQuickSites();
-            renderResources();
-            setupEventListeners();
-            checkAPIStatus();
+            checkApiStatus();
         }
 
-        // Verificar estado de la API
-        function checkAPIStatus() {
+        // Verificar estado API
+        function checkApiStatus() {
             if (apiKey) {
-                apiStatus.textContent = 'API Conectada';
+                apiStatus.textContent = '✅ API Conectada';
                 apiStatus.className = 'api-status connected';
                 chatInput.placeholder = 'Escribe tu pregunta...';
                 chatInput.disabled = false;
                 sendBtn.disabled = false;
                 
+                // Mensaje de bienvenida
                 if (chatMessages.children.length === 1) {
-                    addBotMessage('¡Perfecto! La API de DeepSeek está configurada. Ahora puedes visitar cualquier sitio web y te ayudaré con lo que necesites. Prueba con Google, YouTube, o escribe cualquier URL.');
+                    addBotMessage('¡Listo! Ahora puedes visitar cualquier sitio web y hacer preguntas. Prueba con Google, YouTube o cualquier URL.');
                 }
-            } else {
-                apiStatus.textContent = 'API No Configurada';
-                apiStatus.className = 'api-status disconnected';
-                chatInput.placeholder = 'Configura la API key primero...';
-                chatInput.disabled = true;
-                sendBtn.disabled = true;
             }
         }
 
-        // Renderizar sitios rápidos
-        function renderQuickSites() {
-            quickSites.innerHTML = '';
-            
-            popularSites.forEach(site => {
-                const siteElement = document.createElement('div');
-                siteElement.className = 'quick-site';
-                siteElement.innerHTML = `
-                    <div class="quick-site-icon">${site.icon}</div>
-                    <div class="quick-site-name">${site.name}</div>
-                `;
-                
-                siteElement.addEventListener('click', () => {
-                    navigateToSite(site.url, site.name);
-                });
-                
-                quickSites.appendChild(siteElement);
-            });
-        }
-
-        // Renderizar recursos YOUCORE
-        function renderResources() {
-            resourcesGrid.innerHTML = '';
-            
-            youcoreResources.forEach(resource => {
-                const resourceCard = document.createElement('div');
-                resourceCard.className = 'category-card';
-                resourceCard.innerHTML = `
-                    <div class="category-icon" style="background-color: ${resource.color}20; color: ${resource.color}">
-                        ${resource.icon}
-                    </div>
-                    <h3 class="category-title">${resource.title}</h3>
-                    <p class="category-description">${resource.description}</p>
-                    <div style="margin-top: 10px; font-size: 12px; color: #666;">
-                        ${resource.category}
-                    </div>
-                `;
-                
-                resourceCard.addEventListener('click', () => {
-                    navigateToSite(resource.url, resource.title, resource.context);
-                });
-                
-                resourcesGrid.appendChild(resourceCard);
-            });
-        }
-
-        // Navegar a cualquier sitio
-        function navigateToSite(url, title, context = null) {
-            if (!apiKey) {
-                addBotMessage('⚠️ Para usar la navegación asistida, primero configura tu API key de DeepSeek.');
-                return;
-            }
-
-            // Asegurar que la URL tenga protocolo
-            if (!url.startsWith('http')) {
-                url = 'https://' + url;
-            }
-
-            currentWeb = {
-                url: url,
-                title: title,
-                context: context || `navegación en ${title}`
-            };
-
-            webTitle.textContent = title;
-            webView.src = url;
-            webPanel.classList.add('active');
-            splitContainer.classList.add('has-web');
-            
-            // Mensaje contextual automático
-            setTimeout(() => {
-                addBotMessage(`Perfecto, estás navegando en **${title}**. ¿En qué puedo ayudarte? Puedo explicarte funciones, resolver dudas o ayudarte a usar el sitio eficientemente.`);
-            }, 1500);
-        }
-
-        // Cerrar vista web
-        function closeWebView() {
-            webPanel.classList.remove('active');
-            splitContainer.classList.remove('has-web');
-            webView.src = '';
-            currentWeb = null;
-            urlInput.value = '';
-        }
-
-        // Configurar event listeners
-        function setupEventListeners() {
-            closeWeb.addEventListener('click', closeWebView);
-            
-            sendBtn.addEventListener('click', sendMessage);
-            
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-            
-            chatInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-            });
-
-            // Navegación por URL
-            goBtn.addEventListener('click', () => {
-                const url = urlInput.value.trim();
-                if (url) {
-                    navigateToSite(url, "Sitio Web Personalizado");
-                }
-            });
-
-            urlInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    goBtn.click();
-                }
-            });
-
-            // Configuración API
-            apiToggle.addEventListener('click', () => {
-                apiModal.classList.add('active');
-                if (apiKey) {
-                    apiKeyInput.value = apiKey;
-                }
-            });
-
-            apiSave.addEventListener('click', saveAPIKey);
-
-            apiModal.addEventListener('click', (e) => {
-                if (e.target === apiModal) {
-                    apiModal.classList.remove('active');
-                }
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    apiModal.classList.remove('active');
-                }
-            });
+        // Abrir modal API
+        function openApiModal() {
+            document.getElementById('apiModal').classList.add('active');
         }
 
         // Guardar API Key
-        function saveAPIKey() {
-            const key = apiKeyInput.value.trim();
+        function saveApiKey() {
+            const key = document.getElementById('apiKey').value.trim();
             if (!key) {
-                alert('Por favor, introduce una API key válida');
+                alert('Por favor ingresa una API key');
                 return;
             }
-
+            
             if (!key.startsWith('sk-')) {
-                alert('La API key de DeepSeek debe comenzar con "sk-"');
+                alert('La API key debe comenzar con "sk-"');
                 return;
             }
 
             apiKey = key;
             localStorage.setItem('deepseek_api_key', key);
-            apiModal.classList.remove('active');
-            checkAPIStatus();
-            
-            addBotMessage('✅ API key configurada correctamente. ¡Ahora puedes navegar por cualquier sitio web y recibir asistencia inteligente! Prueba con Google, YouTube o escribe cualquier URL.');
+            document.getElementById('apiModal').classList.remove('active');
+            checkApiStatus();
         }
 
-        // Añadir mensaje del bot
-        function addBotMessage(text, isThinking = false, isError = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isError ? 'error' : (isThinking ? 'thinking' : 'bot')}`;
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            if (isThinking) {
-                return messageDiv;
+        // Navegar a sitio rápido
+        function goToQuickSite(url, title) {
+            if (!apiKey) {
+                addBotMessage('⚠️ Primero configura tu API key de DeepSeek');
+                return;
             }
-            return null;
+
+            currentSite = { url, title };
+            document.getElementById('webView').src = url;
+            document.getElementById('webPanel').classList.add('active');
+            document.getElementById('container').classList.add('has-web');
+            document.getElementById('webTitle').textContent = title;
+
+            setTimeout(() => {
+                addBotMessage(`Perfecto, estás en **${title}**. ¿En qué puedo ayudarte?`);
+            }, 1000);
         }
 
-        // Añadir mensaje del usuario
-        function addUserMessage(text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message user';
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
+        // Navegar por URL
+        function goToSite() {
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) return;
+
+            if (!apiKey) {
+                addBotMessage('⚠️ Primero configura tu API key');
+                return;
+            }
+
+            const fullUrl = url.startsWith('http') ? url : 'https://' + url;
+            goToQuickSite(fullUrl, 'Sitio Web');
+        }
+
+        // Cerrar vista web
+        function closeWebView() {
+            document.getElementById('webPanel').classList.remove('active');
+            document.getElementById('container').classList.remove('has-web');
+            document.getElementById('webView').src = '';
+            currentSite = null;
+        }
+
+        // Añadir mensaje
+        function addBotMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'message bot';
+            div.textContent = text;
+            chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Enviar mensaje a DeepSeek API
+        function addUserMessage(text) {
+            const div = document.createElement('div');
+            div.className = 'message user';
+            div.textContent = text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Enviar mensaje SIMPLIFICADO
         async function sendMessage() {
             const message = chatInput.value.trim();
             if (!message || !apiKey) return;
 
             addUserMessage(message);
             chatInput.value = '';
-            chatInput.style.height = 'auto';
             sendBtn.disabled = true;
-            sendBtn.innerHTML = '<div class="loading-spinner"></div>';
+            sendBtn.textContent = '...';
 
-            const thinkingMessage = addBotMessage("Analizando con DeepSeek...", true);
+            const thinking = addBotMessage('Pensando...');
 
             try {
-                const response = await callDeepSeekAPI(message, currentWeb);
-                
-                if (thinkingMessage) {
-                    thinkingMessage.remove();
-                }
-                addBotMessage(response);
-                
-            } catch (error) {
-                if (thinkingMessage) {
-                    thinkingMessage.remove();
-                }
-                console.error('Error DeepSeek API:', error);
-                
-                if (error.message.includes('401') || error.message.includes('403')) {
-                    addBotMessage('❌ Error de autenticación. Verifica tu API key.', false, true);
-                } else if (error.message.includes('429')) {
-                    addBotMessage('⚠️ Límite de uso excedido. Espera un momento.', false, true);
-                } else if (error.message.includes('network') || error.message.includes('Failed to fetch')) {
-                    addBotMessage('🌐 Error de conexión. Verifica tu internet.', false, true);
-                } else {
-                    addBotMessage('❌ Error al conectar con DeepSeek. Intenta nuevamente.', false, true);
-                }
-            } finally {
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = '<span>Enviar</span>';
-            }
-        }
-
-        // Llamar a la API de DeepSeek
-        async function callDeepSeekAPI(userMessage, currentWeb) {
-            const context = currentWeb ? 
-                `El usuario está navegando en: ${currentWeb.title} (${currentWeb.url}). Contexto: ${currentWeb.context}. ` :
-                "El usuario está en YOUCORE, un asistente de navegación web con IA. ";
-            
-            const systemPrompt = `Eres un asistente de navegación web especializado. ${context}
-El usuario puede estar en cualquier sitio web. Proporciona ayuda práctica, consejos útiles y respuestas específicas relacionadas con la navegación web actual.
-Sé conciso, útil y práctico. Responde en español de manera amigable.`;
-
-            const messages = [
-                { role: "system", content: systemPrompt },
-                ...chatHistory.slice(-4),
-                { role: "user", content: userMessage }
-            ];
-
-            let lastError = null;
-
-            for (let i = 0; i < API_ENDPOINTS.length; i++) {
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 15000);
+                // Respuesta simple sin API por ahora
+                setTimeout(() => {
+                    thinking.remove();
                     
-                    const response = await fetch(API_ENDPOINTS[i], {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${apiKey}`
-                        },
-                        body: JSON.stringify({
-                            model: "deepseek-chat",
-                            messages: messages,
-                            max_tokens: 800,
-                            temperature: 0.7,
-                            stream: false
-                        }),
-                        signal: controller.signal
-                    });
+                    const responses = [
+                        `Sobre ${currentSite?.title || 'el sitio'}: Puedo ayudarte a navegar y entender sus funciones.`,
+                        `Para "${message}" en ${currentSite?.title || 'este sitio'}, te sugiero explorar el menú principal.`,
+                        `Entiendo tu pregunta sobre ${currentSite?.title || 'el sitio web'}. ¿Puedes ser más específico?`
+                    ];
+                    
+                    addBotMessage(responses[Math.floor(Math.random() * responses.length)]);
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Enviar';
+                }, 1000);
 
-                    clearTimeout(timeoutId);
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        
-                        chatHistory.push(
-                            { role: "user", content: userMessage },
-                            { role: "assistant", content: data.choices[0].message.content }
-                        );
-
-                        return data.choices[0].message.content;
-                    } else {
-                        lastError = new Error(`HTTP ${response.status}`);
-                    }
-                } catch (error) {
-                    lastError = error;
-                }
-            }
-
-            // Respuesta de respaldo
-            if (lastError) {
-                const fallbackResponse = generateFallbackResponse(userMessage, currentWeb);
-                chatHistory.push(
-                    { role: "user", content: userMessage },
-                    { role: "assistant", content: fallbackResponse }
-                );
-                
-                return fallbackResponse;
+            } catch (error) {
+                thinking.remove();
+                addBotMessage('Error de conexión. Verifica tu API key.');
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Enviar';
             }
         }
 
-        // Generar respuesta de respaldo
-        function generateFallbackResponse(userMessage, currentWeb) {
-            const lowerMessage = userMessage.toLowerCase();
-            
-            if (currentWeb) {
-                if (lowerMessage.includes('cómo') || lowerMessage.includes('como') || lowerMessage.includes('ayuda')) {
-                    return `Para ${currentWeb.title}, te sugiero explorar las funciones principales del sitio. Si es una red social, revisa la configuración de privacidad. Si es una tienda, verifica las políticas de envío y devolución. ¿Necesitas ayuda con algo específico?`;
-                }
-                
-                return `Entiendo que necesitas ayuda con ${currentWeb.title}. Mientras restauramos la conexión, ¿puedes contarme más específicamente qué necesitas? Por ejemplo: "cómo crear una cuenta" o "dónde encontrar configuraciones".`;
+        // Enter para enviar
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
             }
-            
-            return `Veo que preguntas sobre "${userMessage}". Para darte la mejor ayuda, visita primero un sitio web (como Google, YouTube, etc.) y luego pregúntame sobre lo que necesites.`;
-        }
+        });
 
-        // Inicializar la aplicación
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('apiModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('apiModal')) {
+                document.getElementById('apiModal').classList.remove('active');
+            }
+        });
+
+        // Iniciar
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
